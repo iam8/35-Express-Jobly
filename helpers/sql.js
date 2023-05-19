@@ -20,8 +20,8 @@ const { BadRequestError } = require("../expressError");
  * - jsToSql (object) - mapping of JS property names to their corresponding SQL column names.
  *
  * Returned object properties:
- * - setCols: prepared SQL statement for updating data, separated by commas (i.e. "col1=$1,
- * col2=$2, col3=$3")
+ * - setCols: prepared SQL statement for updating data, separated by commas (i.e. `"col1"=$1,
+ * "col2"=$2, "col3"=$3`)
  * - values: array of new values in corresponding order (i.e. [value1, value2, value3])
  */
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {
