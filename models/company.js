@@ -108,13 +108,13 @@ class Company {
         });
     const handleVarIdx = "$" + (values.length + 1);
 
-    const querySql = `UPDATE companies 
-                      SET ${setCols} 
-                      WHERE handle = ${handleVarIdx} 
-                      RETURNING handle, 
-                                name, 
-                                description, 
-                                num_employees AS "numEmployees", 
+    const querySql = `UPDATE companies
+                      SET ${setCols}
+                      WHERE handle = ${handleVarIdx}
+                      RETURNING handle,
+                                name,
+                                description,
+                                num_employees AS "numEmployees",
                                 logo_url AS "logoUrl"`;
     const result = await db.query(querySql, [...values, handle]);
     const company = result.rows[0];
