@@ -97,6 +97,22 @@ describe("GET /companies", function () {
         });
     });
 
+    test("Throws error 400 if filter minEmployees > maxEmployees", async () => {
+
+    })
+
+    test("Throws error 400 if any non-allowed filters are used", async () => {
+
+    })
+
+    test("Responds with 200 OK and correctly-structured body for some filters used", async () => {
+
+    })
+
+    test("Responds with 200 OK and correctly-structured body for all filters used", async () => {
+
+    })
+
     test("fails: test next() handler", async function () {
         // there's no normal failure event which will cause this route to fail ---
         // thus making it hard to test that the error-handler works with it. This
