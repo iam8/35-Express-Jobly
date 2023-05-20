@@ -47,7 +47,7 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  * - maxEmployees
  * - nameLike (will find case-insensitive, partial matches)
  *
- * Throw a BadRequestError (400) if minEmployees > maxEmployees or if a query param is provided
+ * Throw error with status code 400 if minEmployees > maxEmployees or if a query param is provided
  * that is not in the above filter list.
  *
  * Authorization required: none
@@ -61,7 +61,7 @@ router.get("/", async function (req, res, next) {
         const filters = req.query; // Object of query params and values
 
         // Check for not-allowed filters
-        for (let filter of filters) {
+        for (let filter of Object.keys(filters)) {
             if (!allowedFilters.includes(filter)) {
                 throw new BadRequestError(`Filter not allowed: ${filter}`);
             }
@@ -71,7 +71,7 @@ router.get("/", async function (req, res, next) {
 
         // Check if minEmployees > maxEmployees
         if (minEmployees !== undefined && maxEmployees !== undefined) {
-            if (minEmployees > maxEmployees) {
+            if (+minEmployees > +maxEmployees) {
                 throw new BadRequestError("maxEmployees must be greater than minEmployees");
             }
         }
