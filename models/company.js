@@ -46,10 +46,25 @@ class Company {
 
   /** Find all companies.
    *
+   * Can filter result by passing in an object with any or all of the following properties:
+   *    - nameLike (string)
+   *    - minEmployees (integer)
+   *    - maxEmployees (integer)
+   *
    * Returns [{ handle, name, description, numEmployees, logoUrl }, ...]
    * */
 
-  static async findAll() {
+  static async findAll(filters) {
+
+    // Prepare filter statement here, using the filters object
+    // let filterStmt;
+
+    // if (filters.keys.length === 0) {
+    //     filterStmt = '';
+    // } else {
+    //     filterStmt = `FILTER BY ...`;
+    // }
+
     const companiesRes = await db.query(
           `SELECT handle,
                   name,
@@ -58,6 +73,7 @@ class Company {
                   logo_url AS "logoUrl"
            FROM companies
            ORDER BY name`);
+
     return companiesRes.rows;
   }
 
