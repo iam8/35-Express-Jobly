@@ -98,7 +98,7 @@ describe("GET /companies", function () {
         });
     });
 
-    test("Throws error 400 if filter minEmployees > maxEmployees", async () => {
+    test("Returns error 400 response if filter minEmployees > maxEmployees", async () => {
         const response = await request(app)
             .get("/companies/?minEmployees=100&maxEmployees=99");
 
