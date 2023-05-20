@@ -47,20 +47,40 @@ router.post("/", ensureLoggedIn, async function (req, res, next) {
  * - maxEmployees
  * - nameLike (will find case-insensitive, partial matches)
  *
+ * Throw a BadRequestError (400) if minEmployees > maxEmployees or if a query param is provided
+ * that is not in the above filter list.
+ *
  * Authorization required: none
  */
 
 router.get("/", async function (req, res, next) {
-  try {
+    try {
+        const allowedFilters = ["nameLike", "minEmployees", "maxEmployees"];
 
-    // Get the query string params
-    const filters = req.query; // Object of query params and values
+        // Get the query string params
+        const filters = req.query; // Object of query params and values
 
-    const companies = await Company.findAll();
-    return res.json({ companies });
-  } catch (err) {
-    return next(err);
-  }
+        // Check for not-allowed filters
+        for (let filter of filters) {
+            if (!allowedFilters.includes(filter)) {
+                throw new BadRequestError(`Filter not allowed: ${filter}`);
+            }
+        }
+
+        const {minEmployees, maxEmployees} = filters;
+
+        // Check if minEmployees > maxEmployees
+        if (minEmployees !== undefined && maxEmployees !== undefined) {
+            if (minEmployees > maxEmployees) {
+                throw new BadRequestError("maxEmployees must be greater than minEmployees");
+            }
+        }
+
+        const companies = await Company.findAll(filters);
+        return res.json({ companies });
+    } catch (err) {
+        return next(err);
+    }
 });
 
 /** GET /[handle]  =>  { company }
