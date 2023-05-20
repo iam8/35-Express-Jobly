@@ -4,6 +4,7 @@ const request = require("supertest");
 
 const db = require("../db");
 const app = require("../app");
+const { BadRequestError } = require("../expressError");
 
 const {
   commonBeforeAll,
@@ -98,20 +99,29 @@ describe("GET /companies", function () {
     });
 
     test("Throws error 400 if filter minEmployees > maxEmployees", async () => {
+        const response = await request(app)
+            .get("/companies/?minEmployees=100&maxEmployees=99");
 
+        expect(response.statusCode).toEqual(400);
+        expect(response.body).toEqual({
+            error: {
+                status: 400,
+                message: "maxEmployees must be greater than minEmployees"
+            }
+        });
     })
 
-    test("Throws error 400 if any non-allowed filters are used", async () => {
+    // test("Throws error 400 if any non-allowed filters are used", async () => {
 
-    })
+    // })
 
-    test("Responds with 200 OK and correctly-structured body for some filters used", async () => {
+    // test("Responds with 200 OK and correctly-structured body for some filters used", async () => {
 
-    })
+    // })
 
-    test("Responds with 200 OK and correctly-structured body for all filters used", async () => {
+    // test("Responds with 200 OK and correctly-structured body for all filters used", async () => {
 
-    })
+    // })
 
     test("fails: test next() handler", async function () {
         // there's no normal failure event which will cause this route to fail ---
