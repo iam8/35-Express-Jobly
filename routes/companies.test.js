@@ -124,13 +124,25 @@ describe("GET /companies", function () {
         });
     })
 
-    // test("Responds with 200 OK and correctly-structured body for some filters used", async () => {
+    test("Responds with 200 OK and correctly-structured body for some filters used", async () => {
+        const response = await request(app)
+            .get("/companies/?minEmployees=10");
 
-    // })
+        expect(response.statusCode).toEqual(200);
+        expect(response.body).toEqual({
+            companies: expect.any(Array)
+        });
+    })
 
-    // test("Responds with 200 OK and correctly-structured body for all filters used", async () => {
+    test("Responds with 200 OK and correctly-structured body for all filters used", async () => {
+        const response = await request(app)
+            .get("/companies/?maxEmployees=30&minEmployees=10&nameLike=SomeName");
 
-    // })
+        expect(response.statusCode).toEqual(200);
+        expect(response.body).toEqual({
+            companies: expect.any(Array)
+        });
+    })
 
     test("fails: test next() handler", async function () {
         // there's no normal failure event which will cause this route to fail ---
