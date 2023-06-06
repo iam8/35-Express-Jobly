@@ -111,9 +111,18 @@ describe("GET /companies", function () {
         });
     })
 
-    // test("Throws error 400 if any non-allowed filters are used", async () => {
+    test("Throws error 400 if any non-allowed filters are used", async () => {
+        const response = await request(app)
+            .get("/companies/?minEmployees=10&notAllowed1=40$notAllowed2=50");
 
-    // })
+        expect(response.statusCode).toEqual(400);
+        expect(response.body).toEqual({
+            error: {
+                status: 400,
+                message: "Filter not allowed: notAllowed1"
+            }
+        });
+    })
 
     // test("Responds with 200 OK and correctly-structured body for some filters used", async () => {
 
