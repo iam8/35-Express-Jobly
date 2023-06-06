@@ -55,39 +55,56 @@ class Company {
    * */
 
   static async findAll(filters) {
+    // console.log(filters);
 
-    let nameLike, minEmployees, maxEmployees = {filters};
+    let {nameLike, minEmployees, maxEmployees} = filters;
+    // console.log("nameLike: ", nameLike);
+    // console.log("minEmployees: ", minEmployees);
+    // console.log("maxEmployees: ", maxEmployees);
 
     // Build list of filter statements, if they exist
     let filterStmtList = [];
 
-    if (nameLike !== "") {
-        filterStmtList.append(`name ILIKE '${nameLike}'`);
+    if (nameLike !== undefined) {
+        filterStmtList.push(`name ILIKE '${nameLike}'`);
     }
 
     if (minEmployees !== undefined) {
-        filterStmtList.append(`num_employees >= ${minEmployees}`);
+        filterStmtList.push(`num_employees >= ${minEmployees}`);
     }
 
     if (maxEmployees !== undefined) {
-        filterStmtList.append(`num_employees <= ${maxEmployees}`);
+        filterStmtList.push(`num_employees <= ${maxEmployees}`);
     }
 
     // Build final filter statement
-    let filterStmt = ``;
+    let filterStmt = "";
+    // console.log("FINAL FILTER STATEMENT LIST: ", filterStmtList);
     if (filterStmtList.length > 0) {
         filterStmt = `WHERE ${filterStmtList.join(" AND ")}`;
     }
 
+    // Build final query
+    // let query = `SELECT handle,
+    //                 name,
+    //                 description,
+    //                 num_employees AS "numEmployees",
+    //                 logo_url AS "logoUrl"
+    //             FROM companies
+    //             ${filterStmt}
+    //             ORDER BY name`;
+
+    // console.log("THE FINAL QUERY IS: ", query);
+
     const companiesRes = await db.query(
-          `SELECT handle,
-                  name,
-                  description,
-                  num_employees AS "numEmployees",
-                  logo_url AS "logoUrl"
-           FROM companies
-           ${filterStmt}
-           ORDER BY name`);
+        `SELECT handle,
+            name,
+            description,
+            num_employees AS "numEmployees",
+            logo_url AS "logoUrl"
+        FROM companies
+        ${filterStmt}
+        ORDER BY name`);
 
     return companiesRes.rows;
   }
