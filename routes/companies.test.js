@@ -70,6 +70,7 @@ describe("GET /companies", function () {
     test("ok for anon", async function () {
         const resp = await request(app).get("/companies");
 
+        expect(resp.statusCode).toEqual(200);
         expect(resp.body).toEqual({
             companies:
             [
