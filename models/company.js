@@ -56,14 +56,28 @@ class Company {
 
   static async findAll(filters) {
 
-    // Prepare filter statement here, using the filters object
-    // let filterStmt;
+    let nameLike, minEmployees, maxEmployees = {filters};
 
-    // if (filters.keys.length === 0) {
-    //     filterStmt = '';
-    // } else {
-    //     filterStmt = `FILTER BY ...`;
-    // }
+    // Build list of filter statements, if they exist
+    let filterStmtList = [];
+
+    if (nameLike !== "") {
+        filterStmtList.append(`name ILIKE '${nameLike}'`);
+    }
+
+    if (minEmployees !== undefined) {
+        filterStmtList.append(`num_employees >= ${minEmployees}`);
+    }
+
+    if (maxEmployees !== undefined) {
+        filterStmtList.append(`num_employees <= ${maxEmployees}`);
+    }
+
+    // Build final filter statement
+    let filterStmt = ``;
+    if (filterStmtList.length > 0) {
+        filterStmt = `WHERE ${filterStmtList.join(" AND ")}`;
+    }
 
     const companiesRes = await db.query(
           `SELECT handle,
@@ -72,6 +86,7 @@ class Company {
                   num_employees AS "numEmployees",
                   logo_url AS "logoUrl"
            FROM companies
+           ${filterStmt}
            ORDER BY name`);
 
     return companiesRes.rows;
