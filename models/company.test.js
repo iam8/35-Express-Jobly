@@ -85,6 +85,72 @@ describe("findAll", function () {
             },
         ]);
     });
+
+    test("Works for only nameLike filter applied (upper and lower case)", async function () {
+        let companiesLower = await Company.findAll({nameLike: "c1"});
+        let companiesUpper = await Company.findAll({nameLike: "C1"});
+
+        expect(companiesLower).toEqual([
+            {
+                handle: "c1",
+                name: "C1",
+                description: "Desc1",
+                numEmployees: 1,
+                logoUrl: "http://c1.img",
+            }
+        ]);
+
+        expect(companiesLower).toEqual(companiesUpper);
+    })
+
+    test("Works for only minEmployees filter applied", async function () {
+        let companies = await Company.findAll({minEmployees: 2});
+
+        expect(companies).toEqual([
+            {
+                handle: "c2",
+                name: "C2",
+                description: "Desc2",
+                numEmployees: 2,
+                logoUrl: "http://c2.img",
+            },
+            {
+                handle: "c3",
+                name: "C3",
+                description: "Desc3",
+                numEmployees: 3,
+                logoUrl: "http://c3.img",
+            }
+        ]);
+    })
+
+    test("Works for only nameLike and minEmployees filters applied", async function () {
+        let companies = await Company.findAll({nameLike: "c3", minEmployees: 2});
+
+        expect(companies).toEqual([
+            {
+                handle: "c3",
+                name: "C3",
+                description: "Desc3",
+                numEmployees: 3,
+                logoUrl: "http://c3.img",
+            }
+        ]);
+    })
+
+    test("Works for all filters applied", async function () {
+        let companies = await Company.findAll({nameLike: "c1", minEmployees: 1, maxEmployees: 3});
+
+        expect(companies).toEqual([
+            {
+                handle: "c1",
+                name: "C1",
+                description: "Desc1",
+                numEmployees: 1,
+                logoUrl: "http://c1.img",
+            }
+        ]);
+    })
 });
 
 /************************************** get */
