@@ -103,9 +103,39 @@ describe("Testing create() method", () => {
 
 describe("Testing findAll() method", () => {
 
-    // test("Functions correctly with no filters", async () => {
-
-    // })
+    test("Functions correctly with no filters", async () => {
+        const jobs = await Job.findAll({});
+        expect(jobs).toEqual([
+            {
+                id: expect.any(Number),
+                title: "job1",
+                salary: 100,
+                equity: "0.1",
+                companyHandle: "c1"
+            },
+            {
+                id: expect.any(Number),
+                title: "job2",
+                salary: 200,
+                equity: "0.2",
+                companyHandle: "c2"
+            },
+            {
+                id: expect.any(Number),
+                title: "job3",
+                salary: 300,
+                equity: "0.3",
+                companyHandle: "c3"
+            },
+            {
+                id: expect.any(Number),
+                title: "job4",
+                salary: 400,
+                equity: "0.4",
+                companyHandle: "c1"
+            }
+        ]);
+    })
 
     // TODO: tests for filters
 })
