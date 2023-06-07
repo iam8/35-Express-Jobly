@@ -12,6 +12,7 @@ const {
   commonAfterEach,
   commonAfterAll,
   u1Token,
+  u2Token
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -22,92 +23,114 @@ afterAll(commonAfterAll);
 /************************************** POST /users */
 
 describe("POST /users", function () {
-  test("works for users: create non-admin", async function () {
-    const resp = await request(app)
-        .post("/users")
-        .send({
-          username: "u-new",
-          firstName: "First-new",
-          lastName: "Last-newL",
-          password: "password-new",
-          email: "new@email.com",
-          isAdmin: false,
-        })
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.statusCode).toEqual(201);
-    expect(resp.body).toEqual({
-      user: {
-        username: "u-new",
-        firstName: "First-new",
-        lastName: "Last-newL",
-        email: "new@email.com",
-        isAdmin: false,
-      }, token: expect.any(String),
-    });
-  });
-
-  test("works for users: create admin", async function () {
-    const resp = await request(app)
-        .post("/users")
-        .send({
-          username: "u-new",
-          firstName: "First-new",
-          lastName: "Last-newL",
-          password: "password-new",
-          email: "new@email.com",
-          isAdmin: true,
-        })
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.statusCode).toEqual(201);
-    expect(resp.body).toEqual({
-      user: {
-        username: "u-new",
-        firstName: "First-new",
-        lastName: "Last-newL",
-        email: "new@email.com",
-        isAdmin: true,
-      }, token: expect.any(String),
-    });
-  });
-
-  test("unauth for anon", async function () {
-    const resp = await request(app)
-        .post("/users")
-        .send({
-          username: "u-new",
-          firstName: "First-new",
-          lastName: "Last-newL",
-          password: "password-new",
-          email: "new@email.com",
-          isAdmin: true,
+    test("works for admins: create non-admin", async function () {
+        const resp = await request(app)
+            .post("/users")
+            .send({
+                username: "u-new",
+                firstName: "First-new",
+                lastName: "Last-newL",
+                password: "password-new",
+                email: "new@email.com",
+                isAdmin: false,
+            })
+            .set("authorization", `Bearer ${u2Token}`);
+        expect(resp.statusCode).toEqual(201);
+        expect(resp.body).toEqual({
+        user: {
+            username: "u-new",
+            firstName: "First-new",
+            lastName: "Last-newL",
+            email: "new@email.com",
+            isAdmin: false,
+        }, token: expect.any(String),
         });
-    expect(resp.statusCode).toEqual(401);
-  });
+    });
 
-  test("bad request if missing data", async function () {
-    const resp = await request(app)
-        .post("/users")
-        .send({
-          username: "u-new",
-        })
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.statusCode).toEqual(400);
-  });
+    test("works for admins: create admin", async function () {
+        const resp = await request(app)
+            .post("/users")
+            .send({
+                username: "u-new",
+                firstName: "First-new",
+                lastName: "Last-newL",
+                password: "password-new",
+                email: "new@email.com",
+                isAdmin: true,
+            })
+            .set("authorization", `Bearer ${u2Token}`);
+        expect(resp.statusCode).toEqual(201);
+        expect(resp.body).toEqual({
+        user: {
+            username: "u-new",
+            firstName: "First-new",
+            lastName: "Last-newL",
+            email: "new@email.com",
+            isAdmin: true,
+        }, token: expect.any(String),
+        });
+    });
 
-  test("bad request if invalid data", async function () {
-    const resp = await request(app)
-        .post("/users")
-        .send({
-          username: "u-new",
-          firstName: "First-new",
-          lastName: "Last-newL",
-          password: "password-new",
-          email: "not-an-email",
-          isAdmin: true,
-        })
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.statusCode).toEqual(400);
-  });
+    test("unauth for anon", async function () {
+        const resp = await request(app)
+            .post("/users")
+            .send({
+                username: "u-new",
+                firstName: "First-new",
+                lastName: "Last-newL",
+                password: "password-new",
+                email: "new@email.com",
+                isAdmin: true,
+            });
+        expect(resp.statusCode).toEqual(401);
+    });
+
+    test("Returns unauthorized error (status 401) for logged-in non-admin users", async () => {
+        const resp = await request(app)
+            .post("/users")
+            .send({
+                username: "u-new",
+                firstName: "First-new",
+                lastName: "Last-newL",
+                password: "password-new",
+                email: "new@email.com",
+                isAdmin: true,
+            })
+            .set("authorization", `Bearer ${u1Token}`);
+
+        expect(resp.statusCode).toEqual(401);
+        expect(resp.body).toEqual({
+            error: {
+                status: 401,
+                message: "Unauthorized"
+            }
+        });
+    })
+
+    test("bad request if missing data", async function () {
+        const resp = await request(app)
+            .post("/users")
+            .send({
+                username: "u-new",
+            })
+            .set("authorization", `Bearer ${u2Token}`);
+        expect(resp.statusCode).toEqual(400);
+    });
+
+    test("bad request if invalid data", async function () {
+        const resp = await request(app)
+            .post("/users")
+            .send({
+                username: "u-new",
+                firstName: "First-new",
+                lastName: "Last-newL",
+                password: "password-new",
+                email: "not-an-email",
+                isAdmin: true,
+            })
+            .set("authorization", `Bearer ${u2Token}`);
+        expect(resp.statusCode).toEqual(400);
+    });
 });
 
 /************************************** GET /users */
