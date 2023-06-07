@@ -9,6 +9,7 @@
 
 const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
+const { sqlForPartialUpdate } = require("../helpers/sql");
 
 
 /**
@@ -102,7 +103,24 @@ class Job {
      * Throws NotFoundError if job not found.
      */
     static async update(id, data) {
+        const { setCols, values } = sqlForPartialUpdate(data, {});
+        const idVarIdx = "$" + (values.length + 1);
 
+        const querySql = `UPDATE jobs
+                          SET ${setCols}
+                          WHERE id = ${idVarIdx}
+                          RETURNING id,
+                                    title,
+                                    salary,
+                                    equity,
+                                    company_handle AS "companyHandle"`;
+
+        const result = await db.query(querySql, [...values, id]);
+        const job = result.rows[0];
+
+        if (!job) throw new NotFoundError(`No job found: ${id}`);
+
+        return job;
     }
 
     /**
