@@ -343,23 +343,26 @@ describe("PATCH /users/:username", () => {
 /************************************** DELETE /users/:username */
 
 describe("DELETE /users/:username", function () {
-  test("works for users", async function () {
-    const resp = await request(app)
-        .delete(`/users/u1`)
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.body).toEqual({ deleted: "u1" });
-  });
+    test("works for users", async function () {
+        const resp = await request(app)
+            .delete(`/users/u1`)
+            .set("authorization", `Bearer ${u2Token}`);
 
-  test("unauth for anon", async function () {
-    const resp = await request(app)
-        .delete(`/users/u1`);
-    expect(resp.statusCode).toEqual(401);
-  });
+        expect(resp.body).toEqual({ deleted: "u1" });
+    });
 
-  test("not found if user missing", async function () {
-    const resp = await request(app)
-        .delete(`/users/nope`)
-        .set("authorization", `Bearer ${u2Token}`);
-    expect(resp.statusCode).toEqual(404);
-  });
+    test("unauth for anon", async function () {
+        const resp = await request(app)
+            .delete(`/users/u1`);
+
+        expect(resp.statusCode).toEqual(401);
+    });
+
+    test("not found if user missing", async function () {
+        const resp = await request(app)
+            .delete(`/users/nope`)
+            .set("authorization", `Bearer ${u2Token}`);
+
+        expect(resp.statusCode).toEqual(404);
+    });
 });
