@@ -28,6 +28,17 @@ afterAll(commonAfterAll);
 
 describe("Testing create() method", () => {
 
+    test("Functions correctly with appropriate input", async () => {
+
+    })
+
+    test("Throws BadRequestError for duplicate job input", async () => {
+
+    })
+
+    test("Throws BadRequestError for a nonexistent company_handle", async () => {
+
+    })
 
 })
 
@@ -38,6 +49,11 @@ describe("Testing create() method", () => {
 
 describe("Testing findAll() method", () => {
 
+    test("Functions correctly with no filters", async () => {
+
+    })
+
+    // TODO: tests for filters
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -47,6 +63,13 @@ describe("Testing findAll() method", () => {
 
 describe("Testing get() method", () => {
 
+    test("Functions correctly with appropriate input", async () => {
+
+    })
+
+    test("Throws NotFoundError for a nonexistent job ID", async () => {
+
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -56,6 +79,21 @@ describe("Testing get() method", () => {
 
 describe("Testing update() method", () => {
 
+    test("Throws BadRequestError when given no input data", async () => {
+
+    })
+
+    test("Works correctly for partial update", async () => {
+
+    })
+
+    test("Works correctly for full update", async () => {
+
+    })
+
+    test("Throws NotFoundError for a nonexistent job ID", async () => {
+
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -65,6 +103,13 @@ describe("Testing update() method", () => {
 
 describe("Testing remove() method", () => {
 
+    test("Functions correctly with appropriate input", async () => {
+
+    })
+
+    test("Throws NotFoundError for a nonexistent job ID", async () => {
+
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
