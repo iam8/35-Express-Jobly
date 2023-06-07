@@ -77,9 +77,22 @@ describe("Testing create() method", () => {
 
     })
 
-    // test("Throws BadRequestError for a nonexistent company_handle", async () => {
+    test("Throws BadRequestError for a nonexistent company_handle", async () => {
+        const newJob = {
+            title: "New Job 01",
+            salary: 1000,
+            equity: 1.0,
+            company_handle: "nonexistent"
+        };
 
-    // })
+        try {
+            await Job.create(newJob);
+            // fail();
+        } catch(err) {
+            expect(err)
+                .toEqual(new BadRequestError("Company handle doesn't exist: 'nonexistent'"));
+        }
+    })
 
 })
 
