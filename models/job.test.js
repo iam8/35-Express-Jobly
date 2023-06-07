@@ -60,9 +60,22 @@ describe("Testing create() method", () => {
         });
     })
 
-    // test("Throws BadRequestError for duplicate job input", async () => {
+    test("Throws BadRequestError for duplicate job input", async () => {
+        const newJob = {
+            title: "job1",
+            salary: 1000,
+            equity: 1.0,
+            company_handle: "c1"
+        };
 
-    // })
+        try {
+            await Job.create(newJob);
+            // fail();
+        } catch(err) {
+            expect(err).toEqual(new BadRequestError("Duplicate job: 'job1'"));
+        }
+
+    })
 
     // test("Throws BadRequestError for a nonexistent company_handle", async () => {
 
