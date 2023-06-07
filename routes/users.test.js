@@ -266,72 +266,78 @@ describe("GET /users/:username", function () {
 /************************************** PATCH /users/:username */
 
 describe("PATCH /users/:username", () => {
-  test("works for users", async function () {
-    const resp = await request(app)
-        .patch(`/users/u1`)
-        .send({
-          firstName: "New",
-        })
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.body).toEqual({
-      user: {
-        username: "u1",
-        firstName: "New",
-        lastName: "U1L",
-        email: "user1@user.com",
-        isAdmin: false,
-      },
-    });
-  });
+    test("works for admins", async function () {
+        const resp = await request(app)
+            .patch(`/users/u1`)
+            .send({
+                firstName: "New",
+            })
+            .set("authorization", `Bearer ${u2Token}`);
 
-  test("unauth for anon", async function () {
-    const resp = await request(app)
-        .patch(`/users/u1`)
-        .send({
-          firstName: "New",
+        expect(resp.body).toEqual({
+            user: {
+                username: "u1",
+                firstName: "New",
+                lastName: "U1L",
+                email: "user1@user.com",
+                isAdmin: false,
+            },
         });
-    expect(resp.statusCode).toEqual(401);
-  });
-
-  test("not found if no such user", async function () {
-    const resp = await request(app)
-        .patch(`/users/nope`)
-        .send({
-          firstName: "Nope",
-        })
-        .set("authorization", `Bearer ${u2Token}`);
-    expect(resp.statusCode).toEqual(404);
-  });
-
-  test("bad request if invalid data", async function () {
-    const resp = await request(app)
-        .patch(`/users/u1`)
-        .send({
-          firstName: 42,
-        })
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.statusCode).toEqual(400);
-  });
-
-  test("works: set new password", async function () {
-    const resp = await request(app)
-        .patch(`/users/u1`)
-        .send({
-          password: "new-password",
-        })
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.body).toEqual({
-      user: {
-        username: "u1",
-        firstName: "U1F",
-        lastName: "U1L",
-        email: "user1@user.com",
-        isAdmin: false,
-      },
     });
-    const isSuccessful = await User.authenticate("u1", "new-password");
-    expect(isSuccessful).toBeTruthy();
-  });
+
+    test("unauth for anon", async function () {
+        const resp = await request(app)
+            .patch(`/users/u1`)
+            .send({
+                firstName: "New",
+            });
+
+        expect(resp.statusCode).toEqual(401);
+    });
+
+    test("not found if no such user", async function () {
+        const resp = await request(app)
+            .patch(`/users/nope`)
+            .send({
+                firstName: "Nope",
+            })
+            .set("authorization", `Bearer ${u2Token}`);
+
+        expect(resp.statusCode).toEqual(404);
+    });
+
+    test("bad request if invalid data", async function () {
+        const resp = await request(app)
+            .patch(`/users/u1`)
+            .send({
+                firstName: 42,
+            })
+            .set("authorization", `Bearer ${u2Token}`);
+
+        expect(resp.statusCode).toEqual(400);
+    });
+
+    test("works: set new password", async function () {
+        const resp = await request(app)
+            .patch(`/users/u1`)
+            .send({
+                password: "new-password",
+            })
+            .set("authorization", `Bearer ${u2Token}`);
+
+        expect(resp.body).toEqual({
+            user: {
+                username: "u1",
+                firstName: "U1F",
+                lastName: "U1L",
+                email: "user1@user.com",
+                isAdmin: false,
+            },
+        });
+
+        const isSuccessful = await User.authenticate("u1", "new-password");
+        expect(isSuccessful).toBeTruthy();
+    });
 });
 
 /************************************** DELETE /users/:username */
