@@ -254,10 +254,11 @@ describe("GET /users/:username", function () {
         expect(resp.statusCode).toEqual(401);
     });
 
-    test("not found if user not found", async function () {
+    test("Not found if user doesn't exist", async function () {
         const resp = await request(app)
             .get(`/users/nope`)
             .set("authorization", `Bearer ${u2Token}`);
+
         expect(resp.statusCode).toEqual(404);
     });
 });
