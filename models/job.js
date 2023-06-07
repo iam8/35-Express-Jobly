@@ -44,7 +44,7 @@ class Job {
             VALUES
                 ($1, $2, $3, $4)
             RETURNING
-                (id, title, salary, equity, company_handle AS "companyHandle")`,
+                id, title, salary, equity, company_handle AS "companyHandle"`,
             [title, salary, equity, company_handle]
         );
 
