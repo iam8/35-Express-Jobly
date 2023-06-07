@@ -380,13 +380,23 @@ describe("PATCH /users/:username", () => {
 /************************************** DELETE /users/:username */
 
 describe("DELETE /users/:username", function () {
-    test("works for users", async function () {
+    test("works for admins", async function () {
         const resp = await request(app)
             .delete(`/users/u1`)
             .set("authorization", `Bearer ${u2Token}`);
 
         expect(resp.body).toEqual({ deleted: "u1" });
     });
+
+    // TODO
+    // test("Works for corresponding, non-admin user", async () => {
+
+    // })
+
+    //TODO
+    // test("Returns unauthorized (status 401) for a non-corresponding, non-admin user", async () => {
+
+    // })
 
     test("unauth for anon", async function () {
         const resp = await request(app)
