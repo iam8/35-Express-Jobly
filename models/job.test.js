@@ -29,16 +29,44 @@ afterAll(commonAfterAll);
 describe("Testing create() method", () => {
 
     test("Functions correctly with appropriate input", async () => {
+        const newJob = {
+            title: "New Job 01",
+            salary: 1000,
+            equity: 1.0,
+            company_handle: "c1"
+        };
 
+        const resJob = await Job.create(newJob);
+        expect(resJob).toEqual({
+            id: expect.any(Number),
+            title: "New Job 01",
+            salary: 1000,
+            equity: "1",
+            companyHandle: "c1"
+        });
+
+        // Test insertion into database
+        const qRes = await db.query(`
+            SELECT title, salary, equity, company_handle
+            FROM jobs
+            WHERE title = 'New Job 01'`
+        );
+
+        expect(qRes.rows[0]).toEqual({
+            title: "New Job 01",
+            salary: 1000,
+            equity: "1",
+            company_handle: "c1"
+        });
     })
 
-    test("Throws BadRequestError for duplicate job input", async () => {
+    // test("Throws BadRequestError for duplicate job input", async () => {
 
-    })
+    // })
 
-    test("Throws BadRequestError for a nonexistent company_handle", async () => {
+    // test("Throws BadRequestError for a nonexistent company_handle", async () => {
 
-    })
+    // })
 
 })
 
@@ -49,9 +77,9 @@ describe("Testing create() method", () => {
 
 describe("Testing findAll() method", () => {
 
-    test("Functions correctly with no filters", async () => {
+    // test("Functions correctly with no filters", async () => {
 
-    })
+    // })
 
     // TODO: tests for filters
 })
@@ -63,13 +91,13 @@ describe("Testing findAll() method", () => {
 
 describe("Testing get() method", () => {
 
-    test("Functions correctly with appropriate input", async () => {
+    // test("Functions correctly with appropriate input", async () => {
 
-    })
+    // })
 
-    test("Throws NotFoundError for a nonexistent job ID", async () => {
+    // test("Throws NotFoundError for a nonexistent job ID", async () => {
 
-    })
+    // })
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -79,21 +107,21 @@ describe("Testing get() method", () => {
 
 describe("Testing update() method", () => {
 
-    test("Throws BadRequestError when given no input data", async () => {
+    // test("Throws BadRequestError when given no input data", async () => {
 
-    })
+    // })
 
-    test("Works correctly for partial update", async () => {
+    // test("Works correctly for partial update", async () => {
 
-    })
+    // })
 
-    test("Works correctly for full update", async () => {
+    // test("Works correctly for full update", async () => {
 
-    })
+    // })
 
-    test("Throws NotFoundError for a nonexistent job ID", async () => {
+    // test("Throws NotFoundError for a nonexistent job ID", async () => {
 
-    })
+    // })
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -103,13 +131,13 @@ describe("Testing update() method", () => {
 
 describe("Testing remove() method", () => {
 
-    test("Functions correctly with appropriate input", async () => {
+    // test("Functions correctly with appropriate input", async () => {
 
-    })
+    // })
 
-    test("Throws NotFoundError for a nonexistent job ID", async () => {
+    // test("Throws NotFoundError for a nonexistent job ID", async () => {
 
-    })
+    // })
 })
 
 //-------------------------------------------------------------------------------------------------
