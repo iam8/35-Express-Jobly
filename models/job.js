@@ -24,6 +24,8 @@ class Job {
      * Returns: {id, title, salary, equity, company_handle}
      *
      * Throws BadRequestError if job is already in database.
+     *
+     * TODO: should throw a BadRequestError if company_handle doesn't exist
      */
     static async create({title, salary, equity, company_handle}) {
         const duplicateCheck = await db.query(`
