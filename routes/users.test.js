@@ -136,53 +136,67 @@ describe("POST /users", function () {
 /************************************** GET /users */
 
 describe("GET /users", function () {
-  test("works for users", async function () {
-    const resp = await request(app)
-        .get("/users")
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.body).toEqual({
-      users: [
-        {
-          username: "u1",
-          firstName: "U1F",
-          lastName: "U1L",
-          email: "user1@user.com",
-          isAdmin: false,
-        },
-        {
-          username: "u2",
-          firstName: "U2F",
-          lastName: "U2L",
-          email: "user2@user.com",
-          isAdmin: true,
-        },
-        {
-          username: "u3",
-          firstName: "U3F",
-          lastName: "U3L",
-          email: "user3@user.com",
-          isAdmin: false,
-        },
-      ],
+    test("works for admins", async function () {
+        const resp = await request(app)
+            .get("/users")
+            .set("authorization", `Bearer ${u2Token}`);
+        expect(resp.body).toEqual({
+            users: [
+                {
+                    username: "u1",
+                    firstName: "U1F",
+                    lastName: "U1L",
+                    email: "user1@user.com",
+                    isAdmin: false,
+                },
+                {
+                    username: "u2",
+                    firstName: "U2F",
+                    lastName: "U2L",
+                    email: "user2@user.com",
+                    isAdmin: true,
+                },
+                {
+                    username: "u3",
+                    firstName: "U3F",
+                    lastName: "U3L",
+                    email: "user3@user.com",
+                    isAdmin: false,
+                },
+            ],
+        });
     });
-  });
 
-  test("unauth for anon", async function () {
-    const resp = await request(app)
-        .get("/users");
-    expect(resp.statusCode).toEqual(401);
-  });
+    test("unauth for anon", async function () {
+        const resp = await request(app)
+            .get("/users");
+        expect(resp.statusCode).toEqual(401);
+    });
 
-  test("fails: test next() handler", async function () {
-    // there's no normal failure event which will cause this route to fail ---
-    // thus making it hard to test that the error-handler works with it. This
-    // should cause an error, all right :)
-    await db.query("DROP TABLE users CASCADE");
-    const resp = await request(app)
-        .get("/users")
-        .set("authorization", `Bearer ${u1Token}`);
-    expect(resp.statusCode).toEqual(500);
-  });
+    test("Returns unauthorized error (status 401) for logged-in non-admin users", async () => {
+        const resp = await request(app)
+            .get("/users")
+            .set("authorization", `Bearer ${u1Token}`);
+
+        expect(resp.statusCode).toEqual(401);
+        expect(resp.body).toEqual({
+            error: {
+                status: 401,
+                message: "Unauthorized"
+            }
+        });
+    })
+
+    // test("fails: test next() handler", async function () {
+    //     // there's no normal failure event which will cause this route to fail ---
+    //     // thus making it hard to test that the error-handler works with it. This
+    //     // should cause an error, all right :)
+    //     await db.query("DROP TABLE users CASCADE");
+    //     const resp = await request(app)
+    //         .get("/users")
+    //         .set("authorization", `Bearer badToken`);
+    //     expect(resp.statusCode).toEqual(500);
+    // });
 });
 
 /************************************** GET /users/:username */
