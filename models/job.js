@@ -24,20 +24,34 @@ class Job {
      *
      * Returns: {id, title, salary, equity, company_handle}
      *
-     * Throws BadRequestError if job is already in database.
-     *
-     * TODO: should throw a BadRequestError if company_handle doesn't exist
+     * Throws BadRequestError if job is already in database, or if the given company handle doesn't
+     * exist.
      */
     static async create({title, salary, equity, company_handle}) {
+
+        // Check for duplicate job
         const duplicateCheck = await db.query(`
             SELECT title FROM jobs
             WHERE title = $1`,
             [title]
         );
 
-        if (duplicateCheck.rows[0])
+        if (duplicateCheck.rows[0]) {
             throw new BadRequestError(`Duplicate job: '${title}'`);
+        }
 
+        // Check for presence of company handle in database
+        const companyRes = await db.query(`
+            SELECT name FROM companies
+            WHERE handle = $1`,
+            [company_handle]
+        );
+
+        if (companyRes.rows[0] === undefined) {
+            throw new BadRequestError(`Company handle doesn't exist: '${company_handle}'`);
+        }
+
+        // Create and send final query
         const result = await db.query(`
             INSERT INTO jobs
                 (title, salary, equity, company_handle)
