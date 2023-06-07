@@ -285,6 +285,16 @@ describe("PATCH /users/:username", () => {
         });
     });
 
+    // TODO
+    // test("Works for corresponding, non-admin user", async () => {
+
+    // })
+
+    // TODO
+    // test("Returns unauthorized (status 401) for a non-corresponding, non-admin user", async () => {
+
+    // })
+
     test("unauth for anon", async function () {
         const resp = await request(app)
             .patch(`/users/u1`)
