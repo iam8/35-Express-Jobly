@@ -23,46 +23,62 @@ afterAll(commonAfterAll);
 /************************************** POST /companies */
 
 describe("POST /companies", function () {
-  const newCompany = {
-    handle: "new",
-    name: "New",
-    logoUrl: "http://new.img",
-    description: "DescNew",
-    numEmployees: 10,
-  };
+    const newCompany = {
+        handle: "new",
+        name: "New",
+        logoUrl: "http://new.img",
+        description: "DescNew",
+        numEmployees: 10,
+    };
 
-  test("ok for admins", async function () {
-    const resp = await request(app)
-        .post("/companies")
-        .send(newCompany)
-        .set("authorization", `Bearer ${u2Token}`);
-    expect(resp.statusCode).toEqual(201);
-    expect(resp.body).toEqual({
-      company: newCompany,
+    test("ok for admins", async function () {
+        const resp = await request(app)
+            .post("/companies")
+            .send(newCompany)
+            .set("authorization", `Bearer ${u2Token}`);
+
+        expect(resp.statusCode).toEqual(201);
+        expect(resp.body).toEqual({
+            company: newCompany,
+        });
     });
-  });
 
-  test("bad request with missing data", async function () {
-    const resp = await request(app)
-        .post("/companies")
-        .send({
-          handle: "new",
-          numEmployees: 10,
-        })
-        .set("authorization", `Bearer ${u2Token}`);
-    expect(resp.statusCode).toEqual(400);
-  });
+    test("Returns unauthorized error (status 400) for logged-in non-admin users", async () => {
+        const resp = await request(app)
+            .post("/companies")
+            .send(newCompany)
+            .set("authorization", `Bearer ${u1Token}`);
 
-  test("bad request with invalid data", async function () {
-    const resp = await request(app)
-        .post("/companies")
-        .send({
-          ...newCompany,
-          logoUrl: "not-a-url",
-        })
-        .set("authorization", `Bearer ${u2Token}`);
-    expect(resp.statusCode).toEqual(400);
-  });
+        expect(resp.statusCode).toEqual(401);
+        expect(resp.body).toEqual({
+            error: {
+                status: 401,
+                message: "Unauthorized"
+            }
+        });
+    })
+
+    test("bad request with missing data", async function () {
+        const resp = await request(app)
+            .post("/companies")
+            .send({
+                handle: "new",
+                numEmployees: 10,
+            })
+            .set("authorization", `Bearer ${u2Token}`);
+        expect(resp.statusCode).toEqual(400);
+    });
+
+    test("bad request with invalid data", async function () {
+        const resp = await request(app)
+            .post("/companies")
+            .send({
+                ...newCompany,
+                logoUrl: "not-a-url",
+            })
+            .set("authorization", `Bearer ${u2Token}`);
+        expect(resp.statusCode).toEqual(400);
+    });
 });
 
 /************************************** GET /companies */
