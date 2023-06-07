@@ -59,7 +59,13 @@ class Job {
      * Returns: [{id, title, salary, equity, company_handle}, ...]
      */
     static async findAll(filters) {
+        const jobs = await db.query(`
+            SELECT id, title, salary, equity, company_handle AS "companyHandle"
+            FROM jobs
+            ORDER BY title`
+        );
 
+        return jobs.rows;
     }
 
     /**
