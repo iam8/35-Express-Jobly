@@ -389,9 +389,13 @@ describe("DELETE /users/:username", function () {
     });
 
     // TODO
-    // test("Works for corresponding, non-admin user", async () => {
+    test("Works for corresponding, non-admin user", async () => {
+        const resp = await request(app)
+            .delete("/users/u1")
+            .set("authorization", `Bearer ${u1Token}`);
 
-    // })
+        expect(resp.body).toEqual({ deleted: "u1" });
+    })
 
     //TODO
     // test("Returns unauthorized (status 401) for a non-corresponding, non-admin user", async () => {
