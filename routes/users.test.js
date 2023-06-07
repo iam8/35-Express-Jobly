@@ -285,10 +285,25 @@ describe("PATCH /users/:username", () => {
         });
     });
 
-    // TODO
-    // test("Works for corresponding, non-admin user", async () => {
+    test("Works for corresponding, non-admin user", async () => {
+        const resp = await request(app)
+            .patch("/users/u1")
+            .send({
+                firstName: "New",
+            })
+            .set("authorization", `Bearer ${u1Token}`);
 
-    // })
+        expect(resp.statusCode).toEqual(200);
+        expect(resp.body).toEqual({
+            user: {
+                username: "u1",
+                firstName: "New",
+                lastName: "U1L",
+                email: "user1@user.com",
+                isAdmin: false,
+            }
+        });
+    })
 
     // TODO
     // test("Returns unauthorized (status 401) for a non-corresponding, non-admin user", async () => {
