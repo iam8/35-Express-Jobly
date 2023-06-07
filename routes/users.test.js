@@ -207,15 +207,46 @@ describe("GET /users/:username", function () {
             .get(`/users/u1`)
             .set("authorization", `Bearer ${u2Token}`);
         expect(resp.body).toEqual({
-        user: {
-            username: "u1",
-            firstName: "U1F",
-            lastName: "U1L",
-            email: "user1@user.com",
-            isAdmin: false,
-        },
+            user: {
+                username: "u1",
+                firstName: "U1F",
+                lastName: "U1L",
+                email: "user1@user.com",
+                isAdmin: false,
+            },
         });
     });
+
+    test("Works for corresponding, non-admin user", async () => {
+        const resp = await request(app)
+            .get("/users/u1")
+            .set("authorization", `Bearer ${u1Token}`);
+
+        expect(resp.statusCode).toEqual(200);
+        expect(resp.body).toEqual({
+            user: {
+                username: "u1",
+                firstName: "U1F",
+                lastName: "U1L",
+                email: "user1@user.com",
+                isAdmin: false,
+            },
+        });
+    })
+
+    test("Returns unauthorized (status 401) for a non-corresponding, non-admin user", async () => {
+        const resp = await request(app)
+            .get("/users/u2")
+            .set("authorization", `Bearer ${u1Token}`);
+
+        expect(resp.statusCode).toEqual(401);
+        expect(resp.body).toEqual({
+            error: {
+                status: 401,
+                message: "Unauthorized"
+            }
+        });
+    })
 
     test("unauth for anon", async function () {
         const resp = await request(app)
