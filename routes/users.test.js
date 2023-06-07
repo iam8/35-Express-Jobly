@@ -388,7 +388,6 @@ describe("DELETE /users/:username", function () {
         expect(resp.body).toEqual({ deleted: "u1" });
     });
 
-    // TODO
     test("Works for corresponding, non-admin user", async () => {
         const resp = await request(app)
             .delete("/users/u1")
@@ -397,10 +396,19 @@ describe("DELETE /users/:username", function () {
         expect(resp.body).toEqual({ deleted: "u1" });
     })
 
-    //TODO
-    // test("Returns unauthorized (status 401) for a non-corresponding, non-admin user", async () => {
+    test("Returns unauthorized (status 401) for a non-corresponding, non-admin user", async () => {
+        const resp = await request(app)
+            .delete("/users/u2")
+            .set("authorization", `Bearer ${u1Token}`);
 
-    // })
+        expect(resp.statusCode).toEqual(401);
+        expect(resp.body).toEqual({
+            error: {
+                status: 401,
+                message: "Unauthorized"
+            }
+        });
+    })
 
     test("unauth for anon", async function () {
         const resp = await request(app)
