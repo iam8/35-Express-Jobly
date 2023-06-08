@@ -317,10 +317,6 @@ describe("Testing findAll() method", () => {
             ]
         );
     })
-
-    // test("Trying to apply non-allowed filters: no change", async () => {
-
-    // })
 })
 
 //-------------------------------------------------------------------------------------------------
