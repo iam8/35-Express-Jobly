@@ -156,41 +156,53 @@ describe("findAll", function () {
 /************************************** get */
 
 describe("get", function () {
-  test("works", async function () {
-    let company = await Company.get("c1");
-    expect(company).toEqual({
-      handle: "c1",
-      name: "C1",
-      description: "Desc1",
-      numEmployees: 1,
-      logoUrl: "http://c1.img",
-      jobs: [
-        {
-            id: expect.any(Number),
-            title: "job1",
-            salary: 100,
-            equity: "0.1",
-            companyHandle: "c1"
-        },
-        {
-            id: expect.any(Number),
-            title: "job4",
-            salary: 400,
-            equity: "0.4",
-            companyHandle: "c1"
-        }
-      ]
+    test("works: company with associated jobs", async function () {
+        let company = await Company.get("c1");
+        expect(company).toEqual({
+            handle: "c1",
+            name: "C1",
+            description: "Desc1",
+            numEmployees: 1,
+            logoUrl: "http://c1.img",
+            jobs: [
+                {
+                    id: expect.any(Number),
+                    title: "job1",
+                    salary: 100,
+                    equity: "0.1",
+                    companyHandle: "c1"
+                },
+                {
+                    id: expect.any(Number),
+                    title: "job4",
+                    salary: 400,
+                    equity: "0.4",
+                    companyHandle: "c1"
+                }
+            ]
+        });
     });
-  });
 
-  test("not found if no such company", async function () {
-    try {
-      await Company.get("nope");
-      fail();
-    } catch (err) {
-      expect(err instanceof NotFoundError).toBeTruthy();
-    }
-  });
+    test("Works: company with no associated jobs", async () => {
+        let company = await Company.get("c2");
+        expect(company).toEqual({
+            handle: "c2",
+            name: "C2",
+            description: "Desc2",
+            numEmployees: 2,
+            logoUrl: "http://c2.img",
+            jobs: []
+        });
+    })
+
+    test("not found if no such company", async function () {
+        try {
+            await Company.get("nope");
+            fail();
+        } catch (err) {
+            expect(err instanceof NotFoundError).toBeTruthy();
+        }
+    });
 });
 
 /************************************** update */
