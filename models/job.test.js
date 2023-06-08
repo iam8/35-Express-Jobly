@@ -230,9 +230,47 @@ describe("Testing findAll() method", () => {
         ]);
     })
 
-    // test("Only equity filter applied: set to false", async () => {
+    test("Only equity filter applied: set to false", async () => {
+        const jobs = await Job.findAll({hasEquity: false});
 
-    // })
+        expect(jobs).toEqual([
+            {
+                id: expect.any(Number),
+                title: "job1",
+                salary: 100,
+                equity: "0.1",
+                companyHandle: "c1"
+            },
+            {
+                id: expect.any(Number),
+                title: "job2",
+                salary: 200,
+                equity: "0.2",
+                companyHandle: "c3"
+            },
+            {
+                id: expect.any(Number),
+                title: "job3",
+                salary: 300,
+                equity: "0.3",
+                companyHandle: "c3"
+            },
+            {
+                id: expect.any(Number),
+                title: "job4",
+                salary: 400,
+                equity: "0.4",
+                companyHandle: "c1"
+            },
+            {
+                id: expect.any(Number),
+                title: "job5",
+                salary: 500,
+                equity: "0.0",
+                companyHandle: "c3"
+            }
+        ]);
+    })
 
     // test("minSalary and equity filters applied", async () => {
 
