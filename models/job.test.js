@@ -272,9 +272,31 @@ describe("Testing findAll() method", () => {
         ]);
     })
 
-    // test("minSalary and equity filters applied", async () => {
+    test("minSalary and equity filters applied", async () => {
+        const jobs = await Job.findAll({
+            minSalary: 300,
+            hasEquity: true
+        });
 
-    // })
+        expect(jobs).toEqual(
+            [
+                {
+                    id: expect.any(Number),
+                    title: "job3",
+                    salary: 300,
+                    equity: "0.3",
+                    companyHandle: "c3"
+                },
+                {
+                    id: expect.any(Number),
+                    title: "job4",
+                    salary: 400,
+                    equity: "0.4",
+                    companyHandle: "c1"
+                }
+            ]
+        );
+    })
 
     // test("All filters applied", async () => {
 
