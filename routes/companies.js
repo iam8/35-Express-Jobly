@@ -56,9 +56,7 @@ router.post("/", ensureAdmin, async function (req, res, next) {
 router.get("/", async function (req, res, next) {
     try {
         const allowedFilters = ["nameLike", "minEmployees", "maxEmployees"];
-
-        // Get the query string params
-        const filters = req.query; // Object of query params and values
+        const filters = req.query;
 
         // Check for not-allowed filters
         for (let filter of Object.keys(filters)) {
@@ -78,6 +76,7 @@ router.get("/", async function (req, res, next) {
 
         const companies = await Company.findAll(filters);
         return res.json({ companies });
+
     } catch (err) {
         return next(err);
     }
