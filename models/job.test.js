@@ -147,13 +147,34 @@ describe("Testing findAll() method", () => {
 
 describe("Testing get() method", () => {
 
-    // test("Functions correctly with appropriate input", async () => {
+    test("Functions correctly with appropriate input", async () => {
 
-    // })
+        // Get ID of job 1 from database
+        let jobRes = await db.query(`
+            SELECT id FROM jobs
+            WHERE title = 'job1'`
+        );
 
-    // test("Throws NotFoundError for a nonexistent job ID", async () => {
+        const jobId = jobRes.rows[0].id;
+        let job = await Job.get(jobId);
 
-    // })
+        expect(job).toEqual({
+            id: jobId,
+            title: "job1",
+            salary: 100,
+            equity: "0.1",
+            companyHandle: "c1"
+        });
+    })
+
+    test("Throws NotFoundError for a nonexistent job ID", async () => {
+        try {
+            await Job.get(0);
+            // fail();
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError("Job not found: '0'"));
+        }
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
