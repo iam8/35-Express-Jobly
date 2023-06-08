@@ -60,9 +60,19 @@ describe("POST /jobs", () => {
         });
     })
 
-    // test("Returns error with status 401 for a user that isn't logged in", async () => {
+    test("Returns error with status 401 for a user that isn't logged in", async () => {
+        const resp = await request(app)
+            .post("/jobs")
+            .send(newJob);
 
-    // })
+        expect(resp.statusCode).toEqual(401);
+        expect(resp.body).toEqual({
+            error: {
+                status: 401,
+                message: "Unauthorized"
+            }
+        });
+    })
 
     // test("Returns error with status 401 for a logged-in, non-admin user", async () => {
 
