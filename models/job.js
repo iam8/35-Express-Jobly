@@ -20,14 +20,14 @@ class Job {
     /**
      * Create a new job from given data, update database, and return the new job data.
      *
-     * Data format: {title, salary, equity, company_handle}
+     * Data format: {title, salary, equity, companyHandle}
      *
-     * Returns: {id, title, salary, equity, company_handle}
+     * Returns: {id, title, salary, equity, companyHandle}
      *
      * Throws BadRequestError if job is already in database, or if the given company handle doesn't
      * exist.
      */
-    static async create({title, salary, equity, company_handle}) {
+    static async create({title, salary, equity, companyHandle}) {
 
         // Check for duplicate job
         const duplicateCheck = await db.query(`
@@ -44,11 +44,11 @@ class Job {
         const companyRes = await db.query(`
             SELECT name FROM companies
             WHERE handle = $1`,
-            [company_handle]
+            [companyHandle]
         );
 
         if (companyRes.rows[0] === undefined) {
-            throw new BadRequestError(`Company handle doesn't exist: '${company_handle}'`);
+            throw new BadRequestError(`Company handle doesn't exist: '${companyHandle}'`);
         }
 
         // Create and send final query
@@ -59,7 +59,7 @@ class Job {
                 ($1, $2, $3, $4)
             RETURNING
                 id, title, salary, equity, company_handle AS "companyHandle"`,
-            [title, salary, equity, company_handle]
+            [title, salary, equity, companyHandle]
         );
 
         const job = result.rows[0];
