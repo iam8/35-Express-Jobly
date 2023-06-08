@@ -165,15 +165,25 @@ describe("GET /jobs", () => {
         expect(resp.body).toEqual(noFiltersRes);
     })
 
-    // test("Responds with status 200 and correctly-structured body for some filters used",
-    //     async () => {
+    test("Responds with status 200 and correctly-structured body for some filters used",
+    async () => {
+        const resp = await request(app).get("/jobs/?minSalary=100&title=job3");
 
-    // })
+        expect(resp.statusCode).toEqual(200);
+        expect(resp.body).toEqual({
+            jobs: expect.any(Array)
+        });
+    })
 
-    // test("Responds with status 200 and correctly-structured body for all filters used",
-    //     async () => {
+    test("Responds with status 200 and correctly-structured body for all filters used",
+    async () => {
+        const resp = await request(app).get("/jobs/?minSalary=100&title=job3&hasEquity=true");
 
-    // })
+        expect(resp.statusCode).toEqual(200);
+        expect(resp.body).toEqual({
+            jobs: expect.any(Array)
+        });
+    })
 
     test("Returns error with status 400 if minSalary < 0", async () => {
         const resp = await request(app).get("/jobs/?minSalary=-3");
