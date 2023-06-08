@@ -233,7 +233,7 @@ describe("Testing update() method", () => {
             salary: 99999,
             equity: "0.99999",
             companyHandle: "c1"
-        }
+        };
 
         let job = await Job.update(jobId, partialData);
 
@@ -249,9 +249,36 @@ describe("Testing update() method", () => {
         expect(qRes.rows[0]).toEqual(expectedData);
     })
 
-    // test("Works correctly for full update", async () => {
+    test("Works correctly for full update", async () => {
 
-    // })
+        // Get ID of job 1 from database
+        let jobRes = await db.query(`
+            SELECT id FROM jobs
+            WHERE title = 'job1'`
+        );
+
+        const jobId = jobRes.rows[0].id;
+        const expectedData = {
+            id: jobId,
+            title: "Updated Job Title",
+            salary: 11111,
+            equity: "0.11111",
+            companyHandle: "c1"
+        };
+
+        let job = await Job.update(jobId, fullData);
+
+        expect(job).toEqual(expectedData);
+
+        const qRes = await db.query(`
+            SELECT id, title, salary, equity, company_handle AS "companyHandle"
+            FROM jobs
+            WHERE id = $1`,
+            [jobId]
+        );
+
+        expect(qRes.rows[0]).toEqual(expectedData);
+    })
 
     // test("Throws NotFoundError for a nonexistent job ID", async () => {
 
