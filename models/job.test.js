@@ -315,9 +315,14 @@ describe("Testing update() method", () => {
         expect(qRes.rows[0]).toEqual(expectedData);
     })
 
-    // test("Throws NotFoundError for a nonexistent job ID", async () => {
-
-    // })
+    test("Throws NotFoundError for a nonexistent job ID", async () => {
+        try {
+            await Job.update(0, fullData);
+            //fail();
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError("No job found: 0"));
+        }
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
