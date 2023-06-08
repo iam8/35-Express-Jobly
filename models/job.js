@@ -80,9 +80,34 @@ class Job {
      * Returns: [{id, title, salary, equity, company_handle}, ...]
      */
     static async findAll(filters) {
+
+        let {title, minSalary, hasEquity} = filters;
+
+        // Build list of filter statements, if they exist
+        let filterStmtList = [];
+
+        if (title !== undefined) {
+            filterStmtList.push(`title ILIKE '${title}'`);
+        }
+
+        if (minSalary !== undefined) {
+            filterStmtList.push(`salary >= ${minSalary}`);
+        }
+
+        if (hasEquity) {
+            filterStmtList.push(`equity != 0`);
+        }
+
+        // Build final filter statement
+        let filterStmt = "";
+        if (filterStmtList.length > 0) {
+            filterStmt = `WHERE ${filterStmtList.join(" AND ")}`;
+        }
+
         const jobs = await db.query(`
             SELECT id, title, salary, equity, company_handle AS "companyHandle"
             FROM jobs
+            ${filterStmt}
             ORDER BY title`
         );
 
