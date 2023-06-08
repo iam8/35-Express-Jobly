@@ -114,9 +114,20 @@ class Job {
      *
      * Returns {id, title, salary, equity, company_handle}
      *
+     * Throws BadRequestError if one or more non-allowed fields are passed in with data.
      * Throws NotFoundError if job not found.
      */
     static async update(id, data) {
+
+        // Validate given data: delete not-allowed fields
+        const allowedFields = ["title", "salary", "equity"];
+        for (let field in data) {
+            if (!allowedFields.includes(field)) {
+                // delete data[field];
+                throw new BadRequestError(`Data field not allowed: '${field}'`);
+            }
+        }
+
         const { setCols, values } = sqlForPartialUpdate(data, {companyHandle: "company_handle"});
         const idVarIdx = "$" + (values.length + 1);
 
