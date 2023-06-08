@@ -118,7 +118,7 @@ describe("Testing findAll() method", () => {
                 title: "job2",
                 salary: 200,
                 equity: "0.2",
-                companyHandle: "c2"
+                companyHandle: "c3"
             },
             {
                 id: expect.any(Number),
