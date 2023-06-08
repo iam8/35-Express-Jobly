@@ -117,7 +117,7 @@ class Job {
      * Throws NotFoundError if job not found.
      */
     static async update(id, data) {
-        const { setCols, values } = sqlForPartialUpdate(data, {});
+        const { setCols, values } = sqlForPartialUpdate(data, {companyHandle: "company_handle"});
         const idVarIdx = "$" + (values.length + 1);
 
         const querySql = `UPDATE jobs
