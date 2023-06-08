@@ -26,7 +26,7 @@ const router = new express.Router();
  *
  * Job input should be { title, salary, equity, companyHandle }.
  *
- * Returns { title, salary, equity, companyHandle }.
+ * Returns {job: {id, title, salary, equity, companyHandle} }.
  *
  * Authorization required: login, admin
  */
