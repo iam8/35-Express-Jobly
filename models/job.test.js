@@ -138,6 +138,34 @@ describe("Testing findAll() method", () => {
     })
 
     // TODO: tests for filters
+
+    test("Only title filter applied (upper and lower case)", async () => {
+
+    })
+
+    test("Only minSalary filter applied", async () => {
+
+    })
+
+    test("Only equity filter applied: set to true", async () => {
+
+    })
+
+    test("Only equity filter applied: set to false", async () => {
+
+    })
+
+    test("minSalary and equity filters applied", async () => {
+
+    })
+
+    test("All filters applied", async () => {
+
+    })
+
+    test("Trying to apply non-allowed filters: no change", async () => {
+
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
