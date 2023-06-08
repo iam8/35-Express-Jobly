@@ -175,13 +175,29 @@ describe("GET /jobs", () => {
 
     // })
 
-    // test("Returns error with status 400 if minSalary < 0", async () => {
+    test("Returns error with status 400 if minSalary < 0", async () => {
+        const resp = await request(app).get("/jobs/?minSalary=-3");
 
-    // })
+        expect(resp.statusCode).toEqual(400);
+        expect(resp.body).toEqual({
+            error: {
+                status: 400,
+                message: "minSalary must be >= 0"
+            }
+        });
+    })
 
-    // test("Returns error with status 400 if non-allowed filters are used", async () => {
+    test("Returns error with status 400 if non-allowed filters are used", async () => {
+        const resp = await request(app).get("/jobs/?notAllowed=blah");
 
-    // })
+        expect(resp.statusCode).toEqual(400);
+        expect(resp.body).toEqual({
+            error: {
+                status: 400,
+                message: "Filter not allowed: notAllowed"
+            }
+        });
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
