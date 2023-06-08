@@ -69,7 +69,6 @@ class Job {
     /**
      * Find all jobs.
      *
-     * TODO: filtering.
      * Can filter result by passing in an object with any or all of the following properties:
      * - title: filter by job title (string)
      * - minSalary: filter to jobs with at least that salary (integer)
