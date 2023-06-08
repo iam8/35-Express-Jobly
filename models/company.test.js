@@ -155,7 +155,6 @@ describe("findAll", function () {
 
 /************************************** get */
 
-// TODO: get() should return list of associated jobs too
 describe("get", function () {
   test("works", async function () {
     let company = await Company.get("c1");
