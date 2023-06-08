@@ -123,7 +123,6 @@ class Job {
         const allowedFields = ["title", "salary", "equity"];
         for (let field in data) {
             if (!allowedFields.includes(field)) {
-                // delete data[field];
                 throw new BadRequestError(`Data field not allowed: '${field}'`);
             }
         }
