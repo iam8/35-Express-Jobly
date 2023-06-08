@@ -208,13 +208,34 @@ describe("Testing update() method", () => {
 
 describe("Testing remove() method", () => {
 
-    // test("Functions correctly with appropriate input", async () => {
+    test("Functions correctly with appropriate input", async () => {
 
-    // })
+        // Get ID of job 1 from database
+        let jobRes = await db.query(`
+            SELECT id FROM jobs
+            WHERE title = 'job1'`
+        );
 
-    // test("Throws NotFoundError for a nonexistent job ID", async () => {
+        const jobId = jobRes.rows[0].id;
+        await Job.remove(jobId);
 
-    // })
+        const qRes = await db.query(`
+            SELECT id FROM jobs
+            WHERE id = $1`,
+            [jobId]
+        );
+
+        expect(qRes.rows.length).toEqual(0);
+    })
+
+    test("Throws NotFoundError for a nonexistent job ID", async () => {
+        try {
+            await Job.remove(0);
+            //fail();
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError("No job found: 0"));
+        }
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
