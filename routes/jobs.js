@@ -5,6 +5,8 @@
  * Routes for jobs.
  */
 
+// TODO: JSONSchema validation
+
 "use strict";
 
 const jsonschema = require("jsonschema");
@@ -26,7 +28,14 @@ const router = new express.Router();
  * Authorization required: login, admin
  */
 router.post("/", ensureAdmin, async (req, res, next) => {
+    try {
+        // TODO: JSONschema validation
 
+        const job = await Job.create(req.body);
+        return res.status(201).json({ job });
+    } catch(err) {
+        return next(err);
+    }
 })
 
 
@@ -45,7 +54,30 @@ router.post("/", ensureAdmin, async (req, res, next) => {
  * Authorization required: none
  */
 router.get("/", async (req, res, next) => {
+    try {
+        const allowedFilters = ["title", "minSalary", "hasEquity"];
+        const filters = req.query;
 
+        // Check for non-allowed filters
+        for (let filter of Object.keys(filters)) {
+            if (!allowedFilters.includes(filter)) {
+                throw new BadRequestError(`Filter not allowed: ${filter}`);
+            }
+        }
+
+        const { minSalary } = filters;
+
+        // Validate minSalary
+        if (minSalary < 0) {
+            throw new BadRequestError("minSalary must be >= 0");
+        }
+
+        const jobs = await Job.findAll(filters);
+        return res.json({ jobs });
+
+    } catch(err) {
+        return next(err);
+    }
 })
 
 
