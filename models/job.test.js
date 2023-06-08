@@ -298,9 +298,25 @@ describe("Testing findAll() method", () => {
         );
     })
 
-    // test("All filters applied", async () => {
+    test("All filters applied", async () => {
+        const jobs = await Job.findAll({
+            title: "job4",
+            minSalary: 300,
+            hasEquity: true
+        });
 
-    // })
+        expect(jobs).toEqual(
+            [
+                {
+                    id: expect.any(Number),
+                    title: "job4",
+                    salary: 400,
+                    equity: "0.4",
+                    companyHandle: "c1"
+                }
+            ]
+        );
+    })
 
     // test("Trying to apply non-allowed filters: no change", async () => {
 
