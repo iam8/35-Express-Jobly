@@ -77,7 +77,7 @@ class Job {
      *      - If true, filter to jobs that provide a non-zero amount of equity
      *      - If false or not included in the filtering, list all jobs regardless of equity
      *
-     * Returns: [{id, title, salary, equity, company_handle}, ...]
+     * Returns: [{id, title, salary, equity, companyHandle}, ...]
      */
     static async findAll(filters) {
 
@@ -117,7 +117,7 @@ class Job {
     /**
      * Given a job ID, return data about that job.
      *
-     * Returns {id, title, salary, equity, company_handle}
+     * Returns {id, title, salary, equity, companyHandle}
      *
      * Throws NotFoundError if job not found.
      */
