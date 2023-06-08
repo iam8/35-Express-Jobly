@@ -184,6 +184,22 @@ describe("Testing get() method", () => {
 
 describe("Testing update() method", () => {
 
+    const partialData = {
+        salary: 99999,
+        equity: 0.99999
+    };
+
+    const fullData = {
+        title: "Updated Job Title",
+        salary: 11111,
+        equity: 0.11111
+    };
+
+    const notAllowed = {
+        id: 0,
+        companyHandle: "c3"
+    };
+
     test("Throws BadRequestError when given no input data", async () => {
 
         // Get ID of job 1 from database
@@ -202,9 +218,36 @@ describe("Testing update() method", () => {
         }
     })
 
-    // test("Works correctly for partial update", async () => {
+    test("Works correctly for partial update", async () => {
 
-    // })
+        // Get ID of job 1 from database
+        let jobRes = await db.query(`
+            SELECT id FROM jobs
+            WHERE title = 'job1'`
+        );
+
+        const jobId = jobRes.rows[0].id;
+        const expectedData = {
+            id: jobId,
+            title: "job1",
+            salary: 99999,
+            equity: "0.99999",
+            companyHandle: "c1"
+        }
+
+        let job = await Job.update(jobId, partialData);
+
+        expect(job).toEqual(expectedData);
+
+        const qRes = await db.query(`
+            SELECT id, title, salary, equity, company_handle AS "companyHandle"
+            FROM jobs
+            WHERE id = $1`,
+            [jobId]
+        );
+
+        expect(qRes.rows[0]).toEqual(expectedData);
+    })
 
     // test("Works correctly for full update", async () => {
 
