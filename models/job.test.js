@@ -140,8 +140,8 @@ describe("Testing findAll() method", () => {
     // TODO: tests for filters
 
     test("Only title filter applied (upper and lower case)", async () => {
-        let jobUpper = await Job.findAll({title: "JOB1"});
-        let jobLower = await Job.findAll({title: "job1"});
+        const jobUpper = await Job.findAll({title: "JOB1"});
+        const jobLower = await Job.findAll({title: "job1"});
 
         expect(jobUpper).toEqual(
             [
@@ -158,9 +158,28 @@ describe("Testing findAll() method", () => {
         expect(jobLower).toEqual(jobUpper);
     })
 
-    // test("Only minSalary filter applied", async () => {
+    test("Only minSalary filter applied", async () => {
+        const jobs = await Job.findAll({minSalary: 250});
 
-    // })
+        expect(jobs).toEqual(
+            [
+                {
+                    id: expect.any(Number),
+                    title: "job3",
+                    salary: 300,
+                    equity: "0.3",
+                    companyHandle: "c3"
+                },
+                {
+                    id: expect.any(Number),
+                    title: "job4",
+                    salary: 400,
+                    equity: "0.4",
+                    companyHandle: "c1"
+                }
+            ]
+        );
+    })
 
     // test("Only equity filter applied: set to true", async () => {
 
