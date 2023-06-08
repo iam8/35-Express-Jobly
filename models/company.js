@@ -106,16 +106,33 @@ class Company {
                   name,
                   description,
                   num_employees AS "numEmployees",
-                  logo_url AS "logoUrl"
+                  logo_url AS "logoUrl",
+                  id,
+                  title,
+                  salary,
+                  equity,
+                  company_handle AS "companyHandle"
            FROM companies
+           LEFT JOIN jobs
+                ON companies.handle = jobs.company_handle
            WHERE handle = $1`,
-        [handle]);
+        [handle]
+    );
 
-    const company = companyRes.rows[0];
+    if (companyRes.rows.length === 0) throw new NotFoundError(`No company: ${handle}`);
 
-    if (!company) throw new NotFoundError(`No company: ${handle}`);
+    const {handle: compHandle, name, description, numEmployees, logoUrl} = companyRes.rows[0];
+    const jobData = companyRes.rows.map((row) => {
+        return {
+            id: row.id,
+            title: row.title,
+            salary: row.salary,
+            equity: row.equity,
+            companyHandle: row.companyHandle
+        };
+    });
 
-    return company;
+    return {handle: compHandle, name, description, numEmployees, logoUrl, jobs: jobData};
   }
 
   /** Update company data with `data`.
