@@ -100,6 +100,7 @@ class Company {
    * Throws NotFoundError if not found.
    **/
 
+  // TODO: Fix for companies with no associated jobs
   static async get(handle) {
     const companyRes = await db.query(
           `SELECT handle,
