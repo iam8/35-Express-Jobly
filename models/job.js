@@ -105,7 +105,7 @@ class Job {
     }
 
     /**
-     * Update job data with 'data'.
+     * Update data of the job with the given ID using 'data'.
      *
      * This is a "partial update" --- it's fine if data doesn't contain all the fields; this only
      * changes provided ones.
