@@ -184,9 +184,23 @@ describe("Testing get() method", () => {
 
 describe("Testing update() method", () => {
 
-    // test("Throws BadRequestError when given no input data", async () => {
+    test("Throws BadRequestError when given no input data", async () => {
 
-    // })
+        // Get ID of job 1 from database
+        let jobRes = await db.query(`
+            SELECT id FROM jobs
+            WHERE title = 'job1'`
+        );
+
+        const jobId = jobRes.rows[0].id;
+
+        try {
+            await Job.update(jobId, {});
+            //fail();
+        } catch (err) {
+            expect(err instanceof BadRequestError).toBeTruthy();
+        }
+    })
 
     // test("Works correctly for partial update", async () => {
 
