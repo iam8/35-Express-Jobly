@@ -33,7 +33,7 @@ describe("Testing create() method", () => {
             title: "New Job 01",
             salary: 1000,
             equity: 1.0,
-            company_handle: "c1"
+            companyHandle: "c1"
         };
 
         const resJob = await Job.create(newJob);
@@ -65,7 +65,7 @@ describe("Testing create() method", () => {
             title: "job1",
             salary: 1000,
             equity: 1.0,
-            company_handle: "c1"
+            companyHandle: "c1"
         };
 
         try {
@@ -82,7 +82,7 @@ describe("Testing create() method", () => {
             title: "New Job 01",
             salary: 1000,
             equity: 1.0,
-            company_handle: "nonexistent"
+            companyHandle: "nonexistent"
         };
 
         try {
