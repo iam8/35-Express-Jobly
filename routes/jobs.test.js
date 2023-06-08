@@ -32,6 +32,25 @@ afterAll(commonAfterAll);
 
 describe("POST /jobs", () => {
 
+    test("Works for admins", async () => {
+
+    })
+
+    test("Returns error with status 401 for a user that isn't logged in", async () => {
+
+    })
+
+    test("Returns error with status 401 for a logged-in, non-admin user", async () => {
+
+    })
+
+    test("Returns error with status 400 for request with missing data", async () => {
+
+    })
+
+    test("Returns error with status 400 for request with invalid data", async () => {
+
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -41,6 +60,35 @@ describe("POST /jobs", () => {
 
 describe("GET /jobs", () => {
 
+    test("Works for a user that isn't logged in", async () => {
+
+    })
+
+    test("Works for a logged-in, non-admin user", async () => {
+
+    })
+
+    test("Works for admins", async () => {
+
+    })
+
+    test("Responds with status 200 and correctly-structured body for some filters used",
+        async () => {
+
+    })
+
+    test("Responds with status 200 and correctly-structured body for all filters used",
+        async () => {
+
+    })
+
+    test("Returns error with status 400 if minSalary < 0", async () => {
+
+    })
+
+    test("Returns error with status 400 if non-allowed filters are used", async () => {
+
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -50,6 +98,21 @@ describe("GET /jobs", () => {
 
 describe("GET /jobs/:id", () => {
 
+    test("Works for a user that isn't logged in", async () => {
+
+    })
+
+    test("Works for a logged-in, non-admin user", async () => {
+
+    })
+
+    test("Works for admins", async () => {
+
+    })
+
+    test("Returns error with status 404 if job not found", async () => {
+
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -59,6 +122,33 @@ describe("GET /jobs/:id", () => {
 
 describe("PATCH /jobs/:id", () => {
 
+    test("Works for admins - full update", async () => {
+
+    })
+
+    test("Works for admins - partial update", async () => {
+
+    })
+
+    test("Returns error with status 401 for a user that isn't logged in", async () => {
+
+    })
+
+    test("Returns error with status 401 for a logged-in, non-admin user", async () => {
+
+    })
+
+    test("Returns error with status 400 for request with invalid data", async () => {
+
+    })
+
+    test("Returns error with status 400 for non-allowed field input", async () => {
+
+    })
+
+    test("Returns error with status 404 if job not found", async () => {
+
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -68,6 +158,21 @@ describe("PATCH /jobs/:id", () => {
 
 describe("DELETE /jobs/:id", () => {
 
+    test("Works for admins", async () => {
+
+    })
+
+    test("Returns error with status 401 for a user that isn't logged in", async () => {
+
+    })
+
+    test("Returns error with status 401 for a logged-in, non-admin user", async () => {
+
+    })
+
+    test("Returns error with status 404 if job not found", async () => {
+
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
