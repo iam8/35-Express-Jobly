@@ -19,7 +19,7 @@ const {
     commonAfterEach,
     commonAfterAll,
     u1Token,
-    u2Token
+    u2Token  // Admin token
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -27,30 +27,54 @@ beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
 
+const basicAuth = `Bearer ${u1Token}`;
+const adminAuth = `Bearer ${u2Token}`;
+
 
 // POST /jobs -------------------------------------------------------------------------------------
 
 describe("POST /jobs", () => {
 
+    const newJob = {
+        title: "New Job 1",
+        salary: 999,
+        equity: 0.999,
+        companyHandle: "c1"
+    };
+
     test("Works for admins", async () => {
+        const resp = await request(app)
+            .post("/jobs")
+            .send(newJob)
+            .set("authorization", adminAuth);
 
+        expect(resp.statusCode).toEqual(201);
+        expect(resp.body).toEqual({
+            job: {
+                id: expect.any(Number),
+                title: "New Job 1",
+                salary: 999,
+                equity: "0.999",
+                companyHandle: "c1"
+            }
+        });
     })
 
-    test("Returns error with status 401 for a user that isn't logged in", async () => {
+    // test("Returns error with status 401 for a user that isn't logged in", async () => {
 
-    })
+    // })
 
-    test("Returns error with status 401 for a logged-in, non-admin user", async () => {
+    // test("Returns error with status 401 for a logged-in, non-admin user", async () => {
 
-    })
+    // })
 
-    test("Returns error with status 400 for request with missing data", async () => {
+    // test("Returns error with status 400 for request with missing data", async () => {
 
-    })
+    // })
 
-    test("Returns error with status 400 for request with invalid data", async () => {
+    // test("Returns error with status 400 for request with invalid data", async () => {
 
-    })
+    // })
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -60,35 +84,35 @@ describe("POST /jobs", () => {
 
 describe("GET /jobs", () => {
 
-    test("Works for a user that isn't logged in", async () => {
+    // test("Works for a user that isn't logged in", async () => {
 
-    })
+    // })
 
-    test("Works for a logged-in, non-admin user", async () => {
+    // test("Works for a logged-in, non-admin user", async () => {
 
-    })
+    // })
 
-    test("Works for admins", async () => {
+    // test("Works for admins", async () => {
 
-    })
+    // })
 
-    test("Responds with status 200 and correctly-structured body for some filters used",
-        async () => {
+    // test("Responds with status 200 and correctly-structured body for some filters used",
+    //     async () => {
 
-    })
+    // })
 
-    test("Responds with status 200 and correctly-structured body for all filters used",
-        async () => {
+    // test("Responds with status 200 and correctly-structured body for all filters used",
+    //     async () => {
 
-    })
+    // })
 
-    test("Returns error with status 400 if minSalary < 0", async () => {
+    // test("Returns error with status 400 if minSalary < 0", async () => {
 
-    })
+    // })
 
-    test("Returns error with status 400 if non-allowed filters are used", async () => {
+    // test("Returns error with status 400 if non-allowed filters are used", async () => {
 
-    })
+    // })
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -98,21 +122,21 @@ describe("GET /jobs", () => {
 
 describe("GET /jobs/:id", () => {
 
-    test("Works for a user that isn't logged in", async () => {
+    // test("Works for a user that isn't logged in", async () => {
 
-    })
+    // })
 
-    test("Works for a logged-in, non-admin user", async () => {
+    // test("Works for a logged-in, non-admin user", async () => {
 
-    })
+    // })
 
-    test("Works for admins", async () => {
+    // test("Works for admins", async () => {
 
-    })
+    // })
 
-    test("Returns error with status 404 if job not found", async () => {
+    // test("Returns error with status 404 if job not found", async () => {
 
-    })
+    // })
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -122,33 +146,33 @@ describe("GET /jobs/:id", () => {
 
 describe("PATCH /jobs/:id", () => {
 
-    test("Works for admins - full update", async () => {
+    // test("Works for admins - full update", async () => {
 
-    })
+    // })
 
-    test("Works for admins - partial update", async () => {
+    // test("Works for admins - partial update", async () => {
 
-    })
+    // })
 
-    test("Returns error with status 401 for a user that isn't logged in", async () => {
+    // test("Returns error with status 401 for a user that isn't logged in", async () => {
 
-    })
+    // })
 
-    test("Returns error with status 401 for a logged-in, non-admin user", async () => {
+    // test("Returns error with status 401 for a logged-in, non-admin user", async () => {
 
-    })
+    // })
 
-    test("Returns error with status 400 for request with invalid data", async () => {
+    // test("Returns error with status 400 for request with invalid data", async () => {
 
-    })
+    // })
 
-    test("Returns error with status 400 for non-allowed field input", async () => {
+    // test("Returns error with status 400 for non-allowed field input", async () => {
 
-    })
+    // })
 
-    test("Returns error with status 404 if job not found", async () => {
+    // test("Returns error with status 404 if job not found", async () => {
 
-    })
+    // })
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -158,21 +182,21 @@ describe("PATCH /jobs/:id", () => {
 
 describe("DELETE /jobs/:id", () => {
 
-    test("Works for admins", async () => {
+    // test("Works for admins", async () => {
 
-    })
+    // })
 
-    test("Returns error with status 401 for a user that isn't logged in", async () => {
+    // test("Returns error with status 401 for a user that isn't logged in", async () => {
 
-    })
+    // })
 
-    test("Returns error with status 401 for a logged-in, non-admin user", async () => {
+    // test("Returns error with status 401 for a logged-in, non-admin user", async () => {
 
-    })
+    // })
 
-    test("Returns error with status 404 if job not found", async () => {
+    // test("Returns error with status 404 if job not found", async () => {
 
-    })
+    // })
 })
 
 //-------------------------------------------------------------------------------------------------
