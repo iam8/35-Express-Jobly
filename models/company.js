@@ -92,49 +92,58 @@ class Company {
     return companiesRes.rows;
   }
 
-  /** Given a company handle, return data about company.
-   *
-   * Returns { handle, name, description, numEmployees, logoUrl, jobs }
-   *   where jobs is [{ id, title, salary, equity, companyHandle }, ...]
-   *
-   * Throws NotFoundError if not found.
-   **/
+    /** Given a company handle, return data about company.
+     *
+     * Returns { handle, name, description, numEmployees, logoUrl, jobs }
+     *   where jobs is [{ id, title, salary, equity, companyHandle }, ...]
+     *
+     * Throws NotFoundError if not found.
+     **/
+    static async get(handle) {
+        const companyRes = await db.query(
+            `SELECT handle,
+                    name,
+                    description,
+                    num_employees AS "numEmployees",
+                    logo_url AS "logoUrl",
+                    id,
+                    title,
+                    salary,
+                    equity,
+                    company_handle AS "companyHandle"
+            FROM companies
+            LEFT JOIN jobs
+                    ON companies.handle = jobs.company_handle
+            WHERE handle = $1`,
+            [handle]
+        );
 
-  // TODO: Fix for companies with no associated jobs
-  static async get(handle) {
-    const companyRes = await db.query(
-          `SELECT handle,
-                  name,
-                  description,
-                  num_employees AS "numEmployees",
-                  logo_url AS "logoUrl",
-                  id,
-                  title,
-                  salary,
-                  equity,
-                  company_handle AS "companyHandle"
-           FROM companies
-           LEFT JOIN jobs
-                ON companies.handle = jobs.company_handle
-           WHERE handle = $1`,
-        [handle]
-    );
+        if (companyRes.rows.length === 0) throw new NotFoundError(`No company: ${handle}`);
 
-    if (companyRes.rows.length === 0) throw new NotFoundError(`No company: ${handle}`);
+        const {handle: compHandle, name, description, numEmployees, logoUrl} = companyRes.rows[0];
+        const id = companyRes.rows[0].id;
 
-    const {handle: compHandle, name, description, numEmployees, logoUrl} = companyRes.rows[0];
-    const jobData = companyRes.rows.map((row) => {
-        return {
-            id: row.id,
-            title: row.title,
-            salary: row.salary,
-            equity: row.equity,
-            companyHandle: row.companyHandle
-        };
-    });
+        console.log("VALUE OF JOB ID: ", id);
+        console.log("IS ID NULL? ", id === null);
 
-    return {handle: compHandle, name, description, numEmployees, logoUrl, jobs: jobData};
-  }
+        // Handle cases: company with vs without associated jobs
+        let jobData;
+        if (id === null) {
+            jobData = [];
+        } else {
+            jobData = companyRes.rows.map((row) => {
+                return {
+                    id: row.id,
+                    title: row.title,
+                    salary: row.salary,
+                    equity: row.equity,
+                    companyHandle: row.companyHandle
+                };
+            });
+        }
+
+        return {handle: compHandle, name, description, numEmployees, logoUrl, jobs: jobData};
+    }
 
   /** Update company data with `data`.
    *
