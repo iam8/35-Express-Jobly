@@ -70,6 +70,12 @@ class Job {
      * Find all jobs.
      *
      * TODO: filtering.
+     * Can filter result by passing in an object with any or all of the following properties:
+     * - title: filter by job title (string)
+     * - minSalary: filter to jobs with at least that salary (integer)
+     * - hasEquity: (boolean)
+     *      - If true, filter to jobs that provide a non-zero amount of equity
+     *      - If false or not included in the filtering, list all jobs regardless of equity
      *
      * Returns: [{id, title, salary, equity, company_handle}, ...]
      */
