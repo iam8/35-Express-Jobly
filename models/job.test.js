@@ -195,7 +195,7 @@ describe("Testing update() method", () => {
         equity: 0.11111
     };
 
-    const notAllowed = {
+    const notAllowedData = {
         id: 0,
         companyHandle: "c3"
     };
@@ -270,6 +270,41 @@ describe("Testing update() method", () => {
 
         expect(job).toEqual(expectedData);
 
+        const qRes = await db.query(`
+            SELECT id, title, salary, equity, company_handle AS "companyHandle"
+            FROM jobs
+            WHERE id = $1`,
+            [jobId]
+        );
+
+        expect(qRes.rows[0]).toEqual(expectedData);
+    })
+
+    test("Throws BadRequestError for non-allowed fields in data", async () => {
+
+        // Get ID of job 1 from database
+        let jobRes = await db.query(`
+            SELECT id FROM jobs
+            WHERE title = 'job1'`
+        );
+
+        const jobId = jobRes.rows[0].id;
+        const expectedData = {
+            id: jobId,
+            title: "job1",
+            salary: 100,
+            equity: "0.1",
+            companyHandle: "c1"
+        };
+
+        try {
+            await Job.update(jobId, notAllowedData);
+            //fail();
+        } catch(err) {
+            expect(err).toEqual(new BadRequestError("Data field not allowed: 'id'"));
+        }
+
+        // Check that entry was not modified in database
         const qRes = await db.query(`
             SELECT id, title, salary, equity, company_handle AS "companyHandle"
             FROM jobs
