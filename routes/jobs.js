@@ -83,14 +83,20 @@ router.get("/", async (req, res, next) => {
 
 /** GET /[id]  =>  { job }
  *
- * Returned job format: { id, title, salary, equity, companyHandle }.
+ * Returns: {job: { id, title, salary, equity, companyHandle }}.
  *
  * Throw error 404 if job not found.
  *
  * Authorization required: none
  */
 router.get("/:id", async (req, res, next) => {
+    try {
+        const job = await Job.get(req.params.id);
+        return res.json({ job });
 
+    } catch(err) {
+        return next(err);
+    }
 })
 
 
@@ -103,12 +109,20 @@ router.get("/:id", async (req, res, next) => {
  * Throw error (status 400) if attempting to modify any fields other than the above.
  * Throw error 404 if job not found.
  *
- * Returns { id, title, salary, equity, companyHandle } of the patched job.
+ * Returns {job: { id, title, salary, equity, companyHandle }} of the patched job.
  *
  * Authorization required: login, admin
  */
 router.patch("/:id", ensureAdmin, async (req, res, next) => {
+    try {
+        // TODO: JsonSchema validation
 
+        const job = await Job.update(req.params.id, req.body);
+        return res.json({ job });
+
+    } catch(err) {
+        return next(err);
+    }
 })
 
 
@@ -119,9 +133,15 @@ router.patch("/:id", ensureAdmin, async (req, res, next) => {
  * Authorization: login, admin
  */
 router.delete("/:id", ensureAdmin, async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        await Job.remove(id);
+        return { deleted: id };
 
+    } catch(err) {
+        return next(err);
+    }
 })
-
 
 
 module.exports = {
