@@ -39,7 +39,8 @@ async function commonBeforeAll() {
             ('job1', 100, 0.1, 'c1'),
             ('job2', 200, 0.2, 'c3'),
             ('job3', 300, 0.3, 'c3'),
-            ('job4', 400, 0.4, 'c1')
+            ('job4', 400, 0.4, 'c1'),
+            ('job5', 500, 0.0, 'c3')
         RETURNING id`
     );
 }
