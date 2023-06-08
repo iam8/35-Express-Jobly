@@ -74,14 +74,27 @@ describe("POST /jobs", () => {
         });
     })
 
-    // test("Returns error with status 401 for a logged-in, non-admin user", async () => {
+    test("Returns error with status 401 for a logged-in, non-admin user", async () => {
+        const resp = await request(app)
+            .post("/jobs")
+            .send(newJob)
+            .set("authorization", basicAuth);
 
-    // })
+        expect(resp.statusCode).toEqual(401);
+        expect(resp.body).toEqual({
+            error: {
+                status: 401,
+                message: "Unauthorized"
+            }
+        });
+    })
 
+    // TODO: JSONSCHEMA
     // test("Returns error with status 400 for request with missing data", async () => {
 
     // })
 
+    // TODO: JSONSCHEMA
     // test("Returns error with status 400 for request with invalid data", async () => {
 
     // })
