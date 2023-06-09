@@ -342,7 +342,6 @@ describe("PATCH /jobs/:id", () => {
 describe("DELETE /jobs/:id", () => {
 
     test("Works for admins", async () => {
-        debugger;
 
         // Grab ID of job1 from database
         const id = await getId("job1");
