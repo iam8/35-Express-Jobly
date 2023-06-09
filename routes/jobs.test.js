@@ -108,15 +108,36 @@ describe("POST /jobs", () => {
         });
     })
 
-    // TODO: JSONSCHEMA
-    // test("Returns error with status 400 for request with missing data", async () => {
+    test("Returns error with status 400 for request with missing data", async () => {
+        const missingData = {
+            title: "New Job",
+        };
 
-    // })
+        const resp = await request(app)
+            .post("/jobs")
+            .send(missingData)
+            .set("authorization", adminAuth);
 
-    // TODO: JSONSCHEMA
-    // test("Returns error with status 400 for request with invalid data", async () => {
+        expect(resp.statusCode).toEqual(400);
+        expect(resp.body.error.message.length).toEqual(3);
+    })
 
-    // })
+    test("Returns error with status 400 for request with invalid data", async () => {
+        const invalidData = {
+            title: "New Job",
+            salary: -100,
+            equity: 1.111,
+            companyHandle: "c1"
+        };
+
+        const resp = await request(app)
+            .post("/jobs")
+            .send(invalidData)
+            .set("authorization", adminAuth);
+
+        expect(resp.statusCode).toEqual(400);
+        expect(resp.body.error.message.length).toEqual(2);
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -455,8 +476,6 @@ describe("DELETE /jobs/:id", () => {
         const resp = await request(app)
             .delete(`/jobs/${id}`)
             .set("authorization", adminAuth);
-
-        console.log("RESPONSE: ", resp);
 
         expect(resp.statusCode).toEqual(200);
         expect(resp.body).toEqual({
