@@ -379,13 +379,42 @@ describe("PATCH /jobs/:id", () => {
         });
     })
 
-    // test("Returns error with status 401 for a user that isn't logged in", async () => {
+    test("Returns error with status 401 for a user that isn't logged in", async () => {
 
-    // })
+        // Grab ID of job1 from database
+        const id = await getId("job1");
 
-    // test("Returns error with status 401 for a logged-in, non-admin user", async () => {
+        const resp = await request(app)
+            .patch(`/jobs/${id}`)
+            .send(fullData);
 
-    // })
+        expect(resp.statusCode).toEqual(401);
+        expect(resp.body).toEqual({
+            error: {
+                status: 401,
+                message: "Unauthorized",
+            }
+        });
+    })
+
+    test("Returns error with status 401 for a logged-in, non-admin user", async () => {
+
+        // Grab ID of job1 from database
+        const id = await getId("job1");
+
+        const resp = await request(app)
+            .patch(`/jobs/${id}`)
+            .send(fullData)
+            .set("authorization", basicAuth);
+
+        expect(resp.statusCode).toEqual(401);
+        expect(resp.body).toEqual({
+            error: {
+                status: 401,
+                message: "Unauthorized",
+            }
+        });
+    })
 
     // test("Returns error with status 400 for request with invalid data", async () => {
 
@@ -395,9 +424,20 @@ describe("PATCH /jobs/:id", () => {
 
     // })
 
-    // test("Returns error with status 404 if job not found", async () => {
+    test("Returns error with status 404 if job not found", async () => {
+        const resp = await request(app)
+            .patch("/jobs/0")
+            .send(fullData)
+            .set("authorization", adminAuth);
 
-    // })
+            expect(resp.statusCode).toEqual(404);
+            expect(resp.body).toEqual({
+                error: {
+                    status: 404,
+                    message: "No job found: 0",
+                }
+            });
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
