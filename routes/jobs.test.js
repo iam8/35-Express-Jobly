@@ -341,21 +341,72 @@ describe("PATCH /jobs/:id", () => {
 
 describe("DELETE /jobs/:id", () => {
 
-    // test("Works for admins", async () => {
+    test("Works for admins", async () => {
+        debugger;
 
-    // })
+        // Grab ID of job1 from database
+        const id = await getId("job1");
 
-    // test("Returns error with status 401 for a user that isn't logged in", async () => {
+        const resp = await request(app)
+            .delete(`/jobs/${id}`)
+            .set("authorization", adminAuth);
 
-    // })
+        console.log("RESPONSE: ", resp);
 
-    // test("Returns error with status 401 for a logged-in, non-admin user", async () => {
+        expect(resp.statusCode).toEqual(200);
+        expect(resp.body).toEqual({
+            deleted: id
+        });
+    })
 
-    // })
+    test("Returns error with status 401 for a user that isn't logged in", async () => {
 
-    // test("Returns error with status 404 if job not found", async () => {
+        // Grab ID of job1 from database
+        const id = await getId("job1");
 
-    // })
+        const resp = await request(app)
+            .delete(`/jobs/${id}`);
+
+        expect(resp.statusCode).toEqual(401);
+        expect(resp.body).toEqual({
+            error: {
+                status: 401,
+                message: "Unauthorized"
+            }
+        });
+    })
+
+    test("Returns error with status 401 for a logged-in, non-admin user", async () => {
+
+        // Grab ID of job1 from database
+        const id = await getId("job1");
+
+        const resp = await request(app)
+            .delete(`/jobs/${id}`)
+            .set("authorization", basicAuth);
+
+        expect(resp.statusCode).toEqual(401);
+        expect(resp.body).toEqual({
+            error: {
+                status: 401,
+                message: "Unauthorized"
+            }
+        });
+    })
+
+    test("Returns error with status 404 if job not found", async () => {
+        const resp = await request(app)
+            .delete("/jobs/0")
+            .set("authorization", adminAuth);
+
+        expect(resp.statusCode).toEqual(404);
+        expect(resp.body).toEqual({
+            error: {
+                status: 404,
+                message: "No job found: 0"
+            }
+        });
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
