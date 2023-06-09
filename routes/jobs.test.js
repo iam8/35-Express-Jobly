@@ -305,16 +305,60 @@ describe("GET /jobs/:id", () => {
 
 describe("PATCH /jobs/:id", () => {
 
-    const fullData = {};
-    const partialData = {};
+    const fullData = {
+        title: "New Job Title",
+        salary: 111,
+        equity: 0.111
+    };
 
-    // test("Works for admins - full update", async () => {
+    const partialData = {
+        title: "New Job Title",
+        equity: 0.111
+    };
 
-    // })
+    test("Works for admins - full update", async () => {
 
-    // test("Works for admins - partial update", async () => {
+        // Grab ID of job1 from database
+        const id = await getId("job1");
 
-    // })
+        const resp = await request(app)
+            .patch(`/jobs/${id}`)
+            .send(fullData)
+            .set("authorization", adminAuth);
+
+        expect(resp.statusCode).toEqual(200);
+        expect(resp.body).toEqual({
+            job: {
+                id,
+                title: "New Job Title",
+                salary: 111,
+                equity: "0.111",
+                companyHandle: "c1"
+            }
+        });
+    })
+
+    test("Works for admins - partial update", async () => {
+
+        // Grab ID of job1 from database
+        const id = await getId("job1");
+
+        const resp = await request(app)
+            .patch(`/jobs/${id}`)
+            .send(partialData)
+            .set("authorization", adminAuth);
+
+        expect(resp.statusCode).toEqual(200);
+        expect(resp.body).toEqual({
+            job: {
+                id,
+                title: "New Job Title",
+                salary: 100,
+                equity: "0.111",
+                companyHandle: "c1"
+            }
+        });
+    })
 
     test("Returns error with status 400 for empty data input", async () => {
 
