@@ -31,6 +31,25 @@ const basicAuth = `Bearer ${u1Token}`;
 const adminAuth = `Bearer ${u2Token}`;
 
 
+// HELPERS FOR TESTS ------------------------------------------------------------------------------
+
+/**
+ * Get the ID of the job with the given title from the database.
+ *
+ * Returns: job ID (integer)
+ */
+async function getId(jobTitle) {
+    const idRes = await db.query(`
+        SELECT id FROM jobs
+        WHERE title = 'job1'`
+    );
+
+    return idRes.rows[0].id;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+
 // POST /jobs -------------------------------------------------------------------------------------
 
 describe("POST /jobs", () => {
@@ -217,9 +236,27 @@ describe("GET /jobs", () => {
 
 describe("GET /jobs/:id", () => {
 
-    // test("Works for a user that isn't logged in", async () => {
+    const jobRes = {
+        job: {
+            id: expect.any(Number),
+            title: "job1",
+            salary: 100,
+            equity: "0.1",
+            companyHandle: "c1"
+        }
+    };
 
-    // })
+    test("Works for a user that isn't logged in", async () => {
+
+        // Grab ID of job1 from database
+        const id = await getId("job1");
+
+        const resp = await request(app)
+            .get(`/jobs/${id}`);
+
+        expect(resp.statusCode).toEqual(200);
+        expect(resp.body).toEqual(jobRes);
+    })
 
     // test("Works for a logged-in, non-admin user", async () => {
 
