@@ -139,7 +139,7 @@ router.delete("/:id", ensureAdmin, async (req, res, next) => {
     try {
         const id = req.params.id;
         await Job.remove(id);
-        return { deleted: id };
+        return res.json({ deleted: id });
 
     } catch(err) {
         return next(err);
