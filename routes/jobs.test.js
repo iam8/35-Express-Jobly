@@ -258,17 +258,44 @@ describe("GET /jobs/:id", () => {
         expect(resp.body).toEqual(jobRes);
     })
 
-    // test("Works for a logged-in, non-admin user", async () => {
+    test("Works for a logged-in, non-admin user", async () => {
 
-    // })
+        // Grab ID of job1 from database
+        const id = await getId("job1");
 
-    // test("Works for admins", async () => {
+        const resp = await request(app)
+            .get(`/jobs/${id}`)
+            .set("authorization", basicAuth);
 
-    // })
+        expect(resp.statusCode).toEqual(200);
+        expect(resp.body).toEqual(jobRes);
+    })
 
-    // test("Returns error with status 404 if job not found", async () => {
+    test("Works for admins", async () => {
 
-    // })
+        // Grab ID of job1 from database
+        const id = await getId("job1");
+
+        const resp = await request(app)
+            .get(`/jobs/${id}`)
+            .set("authorization", adminAuth);
+
+        expect(resp.statusCode).toEqual(200);
+        expect(resp.body).toEqual(jobRes);
+    })
+
+    test("Returns error with status 404 if job not found", async () => {
+        const resp = await request(app)
+            .get("/jobs/0");
+
+        expect(resp.statusCode).toEqual(404);
+        expect(resp.body).toEqual({
+            error: {
+                status: 404,
+                message: "Job not found: '0'"
+            }
+        });
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
