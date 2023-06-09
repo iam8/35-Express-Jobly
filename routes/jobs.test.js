@@ -305,6 +305,9 @@ describe("GET /jobs/:id", () => {
 
 describe("PATCH /jobs/:id", () => {
 
+    const fullData = {};
+    const partialData = {};
+
     // test("Works for admins - full update", async () => {
 
     // })
@@ -312,6 +315,25 @@ describe("PATCH /jobs/:id", () => {
     // test("Works for admins - partial update", async () => {
 
     // })
+
+    test("Returns error with status 400 for empty data input", async () => {
+
+        // Grab ID of job1 from database
+        const id = await getId("job1");
+
+        const resp = await request(app)
+            .patch(`/jobs/${id}`)
+            .set("authorization", adminAuth)
+            .send({});
+
+        expect(resp.statusCode).toEqual(400);
+        expect(resp.body).toEqual({
+            error: {
+                status: 400,
+                message: "No data"
+            }
+        });
+    })
 
     // test("Returns error with status 401 for a user that isn't logged in", async () => {
 
@@ -354,7 +376,7 @@ describe("DELETE /jobs/:id", () => {
 
         expect(resp.statusCode).toEqual(200);
         expect(resp.body).toEqual({
-            deleted: id
+            deleted: `${id}`
         });
     })
 
