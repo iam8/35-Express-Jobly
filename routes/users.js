@@ -67,6 +67,8 @@ router.get("/", ensureAdmin, async function (req, res, next) {
  * Returns { username, firstName, lastName, isAdmin }
  *
  * Authorization required: login, admin or corresponding user
+ *
+ * TODO: add logic to show the jobIds for user's applied jobs in return value
  **/
 
 router.get("/:username", ensureAdminOrSpecificUser, async function (req, res, next) {

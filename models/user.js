@@ -121,6 +121,8 @@ class User {
      *   where jobs is [ jobId1, jobId2, ...]
      *
      * Throws NotFoundError if user not found.
+     *
+     * TODO: add logic to show the jobIds for user's applied jobs in return value
      **/
 
     static async get(username) {
