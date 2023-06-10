@@ -425,3 +425,35 @@ describe("DELETE /users/:username", function () {
         expect(resp.statusCode).toEqual(404);
     });
 });
+
+
+// POST /users/[username]/jobs/[id] ---------------------------------------------------------------
+
+describe("POST /users/:username/jobs/:id", () => {
+
+    test("Works for admins", async () => {
+
+    })
+
+    test("Works for logged-in, corresponding user", async () => {
+
+    })
+
+    test("Returns error with status code 401 for a logged-out user", async () => {
+
+    })
+
+    test("Returns error with status code 401 for a non-admin, non-corresponding user", async () => {
+
+    })
+
+    test("Returns error with status code 404 for a nonexistent username", async () => {
+
+    })
+
+    test("Returns error with status code 404 for a nonexistent job ID", async () => {
+
+    })
+})
+
+//-------------------------------------------------------------------------------------------------
