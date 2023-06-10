@@ -237,7 +237,7 @@ class User {
         );
 
         if (jobRes.rows[0] === undefined) {
-            throw new NotFoundError(`No job found: ${jobId}`);
+            throw new NotFoundError(`No job found: '${jobId}'`);
         }
 
         // Insert entry into applications table
