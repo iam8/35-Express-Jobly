@@ -272,7 +272,8 @@ describe("Applying for a job", () => {
         const appRes = await db.query(`
             SELECT username, job_id FROM applications
             WHERE username = $1 AND job_id = $2`,
-            ["u1", jobId]);
+            ["u1", jobId]
+        );
 
         expect(appRes.rows.length).toEqual(1);
     })
