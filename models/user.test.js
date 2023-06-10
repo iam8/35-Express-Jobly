@@ -173,6 +173,20 @@ describe("get", function () {
         });
     });
 
+    test("Works for user with no job applications", async () => {
+
+        let user = await User.get("u2");
+
+        expect(user).toEqual({
+            username: "u2",
+            firstName: "U2F",
+            lastName: "U2L",
+            email: "u2@email.com",
+            isAdmin: false,
+            jobs: []
+        })
+    })
+
     test("not found if no such user", async function () {
         try {
             await User.get("nope");
