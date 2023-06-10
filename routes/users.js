@@ -120,4 +120,28 @@ router.delete("/:username", ensureAdminOrSpecificUser, async function (req, res,
 });
 
 
+/** POST /[username]/jobs/[id]
+ *
+ * Apply for a job.
+ *
+ * Returns: { applied: jobId}.
+ *
+ * Parameters:
+ *  - username: the username of the user applying for a job;
+ *  - id: the ID of the job being applied for.
+ *
+ * Throws NotFoundError (status 404) for a nonexistent username and/or job ID.
+ *
+ * Authorization required: login, admin or corresponding user
+ */
+router.post("/:username/jobs/:id". ensureAdminOrSpecificUser, async (req, res, next) => {
+    try {
+
+    } catch(err) {
+        return next(err);
+    }
+})
+
+
+
 module.exports = router;
