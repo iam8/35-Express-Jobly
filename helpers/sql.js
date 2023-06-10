@@ -5,8 +5,8 @@
  * Helpers for writing SQL queries.
  */
 
-
 const { BadRequestError } = require("../expressError");
+
 
 /**
  * Create and return an object containing a string of column names to update, and an array of
@@ -22,7 +22,7 @@ const { BadRequestError } = require("../expressError");
  * Returned object properties:
  * - setCols: prepared SQL statement for updating data, separated by commas (i.e. `"col1"=$1,
  * "col2"=$2, "col3"=$3`)
- * - values: array of new values in corresponding order (i.e. [value1, value2, value3])
+ * - values: array of new values in corresponding order (i.e. `[value1, value2, value3]`)
  */
 function sqlForPartialUpdate(dataToUpdate, jsToSql) {
     const keys = Object.keys(dataToUpdate);
