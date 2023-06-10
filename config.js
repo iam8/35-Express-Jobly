@@ -1,3 +1,6 @@
+// Ioana A Mititean
+// Unit 35 - Jobly
+
 "use strict";
 
 /** Shared config for application; can be required many places. */
@@ -6,7 +9,6 @@ require("dotenv").config();
 require("colors");
 
 const SECRET_KEY = process.env.SECRET_KEY || "secret-dev";
-
 const HOSTNAME = process.env.HOSTNAME || "127.0.0.1";
 const PORT = +process.env.PORT || 3001;
 
@@ -28,6 +30,7 @@ console.log("PORT:".yellow, PORT.toString());
 console.log("BCRYPT_WORK_FACTOR".yellow, BCRYPT_WORK_FACTOR);
 console.log("Database:".yellow, getDatabaseUri());
 console.log("---");
+
 
 module.exports = {
     SECRET_KEY,
