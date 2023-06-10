@@ -121,27 +121,42 @@ class User {
      *   where jobs is [ jobId1, jobId2, ...]
      *
      * Throws NotFoundError if user not found.
-     *
-     * TODO: add logic to show the jobIds for user's applied jobs in return value
      **/
 
     static async get(username) {
         const userRes = await db.query(
-            `SELECT username,
+            `SELECT users.username,
                     first_name AS "firstName",
                     last_name AS "lastName",
                     email,
-                    is_admin AS "isAdmin"
+                    is_admin AS "isAdmin",
+                    id
             FROM users
-            WHERE username = $1`,
+            LEFT JOIN applications
+                ON users.username = applications.username
+            LEFT JOIN jobs
+                ON applications.job_id = jobs.id
+            WHERE users.username = $1`,
             [username],
         );
 
-        const user = userRes.rows[0];
+        if (userRes.rows.length === 0) throw new NotFoundError(`No user: ${username}`);
 
-        if (!user) throw new NotFoundError(`No user: ${username}`);
+        const { username: uname, firstName, lastName, email, isAdmin } = userRes.rows[0];
+        const id = userRes.rows[0].id;
 
-        return user;
+        // console.log("USER VALUES RESULTS: ", uname, firstName, lastName, email, isAdmin);
+        // console.log("JOB ID RESULT: ", id);
+
+        // Handle cases: user with vs without applications
+        let jobs = [];
+        if (id !== null) {
+            jobs = userRes.rows.map((row) => {
+                return row.id;
+            })
+        }
+
+        return { username: uname, firstName, lastName, email, isAdmin, jobs };
     }
 
     /** Update user data with `data`.
