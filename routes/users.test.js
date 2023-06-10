@@ -470,9 +470,20 @@ describe("POST /users/:username/jobs/:id", () => {
         });
     })
 
-    // test("Works for logged-in, corresponding user", async () => {
+    test("Works for logged-in, corresponding, non-admin user", async () => {
 
-    // })
+        // Grab ID of job1 from database
+        const jobId = await getId("job1");
+
+        const resp = await request(app)
+            .post(`/users/u1/jobs/${jobId}`)
+            .set("authorization", basicAuth);
+
+        expect(resp.statusCode).toEqual(201);
+        expect(resp.body).toEqual({
+            applied: jobId
+        });
+    })
 
     // test("Returns error with status code 401 for a logged-out user", async () => {
 
