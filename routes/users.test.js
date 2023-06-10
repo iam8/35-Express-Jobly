@@ -161,9 +161,11 @@ describe("POST /users", function () {
 
 describe("GET /users", function () {
     test("works for admins", async function () {
+
         const resp = await request(app)
             .get("/users")
             .set("authorization", `Bearer ${u2Token}`);
+
         expect(resp.body).toEqual({
             users: [
                 {
@@ -237,6 +239,10 @@ describe("GET /users/:username", function () {
                 lastName: "U1L",
                 email: "user1@user.com",
                 isAdmin: false,
+                jobs: [
+                    expect.any(Number),
+                    expect.any(Number)
+                ]
             },
         });
     });
@@ -254,6 +260,10 @@ describe("GET /users/:username", function () {
                 lastName: "U1L",
                 email: "user1@user.com",
                 isAdmin: false,
+                jobs: [
+                    expect.any(Number),
+                    expect.any(Number)
+                ]
             },
         });
     })
