@@ -247,7 +247,7 @@ class User {
                 (username, job_id)
             VALUES
                 ($1, $2)
-            RETURNING username, job_id AS 'jobId'`,
+            RETURNING username, job_id AS "jobId"`,
             [username, jobId]
         );
 
