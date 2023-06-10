@@ -41,7 +41,8 @@ const adminAuth = `Bearer ${u2Token}`;
 async function getId(jobTitle) {
     const idRes = await db.query(`
         SELECT id FROM jobs
-        WHERE title = 'job1'`
+        WHERE title = $1`,
+        [jobTitle]
     );
 
     return idRes.rows[0].id;
