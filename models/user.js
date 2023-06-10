@@ -207,9 +207,51 @@ class User {
 
     /**
      * Apply for the job with the given ID.
+     *
+     * Return { username, id }, where:
+     *  - 'username' is the username of the user applying for the job,
+     *  - 'id' is the ID of the job being applied for.
+     *
+     * Throw error (status 404) if no username with the given username exists.
+     *
+     * Throw error (status 404) if no job with the given ID exists.
+     *
      */
-    static async applyForJob(id) {
+    static async applyForJob(username, id) {
 
+        // Check for user existence
+        const userRes = await db.query(`
+            SELECT username FROM users
+            WHERE username = $1`,
+            [username]
+        );
+
+        if (userRes.rows[0] === undefined) {
+            throw new NotFoundError(`No user found: ${username}`);
+        }
+
+        // Check for job existence
+        const jobRes = await db.query(`
+            SELECT id FROM jobs
+            WHERE id = $1`,
+            [id]
+        );
+
+        if (jobRes.rows[0] === undefined) {
+            throw new NotFoundError(`No job found: ${id}`);
+        }
+
+        // Insert entry into applications table
+        const result = await db.query(`
+            INSERT INTO applications
+                (username, job_id)
+            VALUES
+                ($1, $2)
+            RETURNING username, job_id AS 'id'`,
+            [username, id]
+        );
+
+        return result.rows[0];
     }
 }
 
