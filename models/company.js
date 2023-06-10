@@ -123,14 +123,9 @@ class Company {
         const {handle: compHandle, name, description, numEmployees, logoUrl} = companyRes.rows[0];
         const id = companyRes.rows[0].id;
 
-        console.log("VALUE OF JOB ID: ", id);
-        console.log("IS ID NULL? ", id === null);
-
         // Handle cases: company with vs without associated jobs
-        let jobData;
-        if (id === null) {
-            jobData = [];
-        } else {
+        let jobData = [];
+        if (id !== null) {
             jobData = companyRes.rows.map((row) => {
                 return {
                     id: row.id,
