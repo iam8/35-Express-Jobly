@@ -23,6 +23,7 @@ const badJwt = jwt.sign({ username: "test", isAdmin: false }, "wrong");
 
 
 describe("authenticateJWT", function () {
+
     test("works: via header", function () {
         expect.assertions(2);
 
@@ -76,6 +77,7 @@ describe("authenticateJWT", function () {
 
 
 describe("ensureLoggedIn", function () {
+
     test("works", function () {
         expect.assertions(1);
 
@@ -100,3 +102,13 @@ describe("ensureLoggedIn", function () {
         ensureLoggedIn(req, res, next);
     });
 });
+
+
+describe("ensureAdmin", () => {
+
+})
+
+
+describe("ensureAdminOrSpecificUser", () => {
+
+})
