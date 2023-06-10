@@ -20,6 +20,30 @@ beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
 
+const basicAuth = `Bearer ${u1Token}`;
+const adminAuth = `Bearer ${u2Token}`;
+
+
+// HELPERS FOR TESTS ------------------------------------------------------------------------------
+
+/**
+ * Get the ID of the job with the given title from the database.
+ *
+ * Returns: job ID (integer)
+ */
+async function getId(jobTitle) {
+    const idRes = await db.query(`
+        SELECT id FROM jobs
+        WHERE title = $1`,
+        [jobTitle]
+    );
+
+    return idRes.rows[0].id;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+
 /************************************** POST /users */
 
 describe("POST /users", function () {
@@ -433,27 +457,38 @@ describe("POST /users/:username/jobs/:id", () => {
 
     test("Works for admins", async () => {
 
+        // Grab ID of job1 from database
+        const jobId = await getId("job1");
+
+        const resp = await request(app)
+            .post(`/users/u1/jobs/${jobId}`)
+            .set("authorization", adminAuth);
+
+        expect(resp.statusCode).toEqual(201);
+        expect(resp.body).toEqual({
+            applied: jobId
+        });
     })
 
-    test("Works for logged-in, corresponding user", async () => {
+    // test("Works for logged-in, corresponding user", async () => {
 
-    })
+    // })
 
-    test("Returns error with status code 401 for a logged-out user", async () => {
+    // test("Returns error with status code 401 for a logged-out user", async () => {
 
-    })
+    // })
 
-    test("Returns error with status code 401 for a non-admin, non-corresponding user", async () => {
+    // test("Returns error with status code 401 for a non-admin, non-corresponding user", async () => {
 
-    })
+    // })
 
-    test("Returns error with status code 404 for a nonexistent username", async () => {
+    // test("Returns error with status code 404 for a nonexistent username", async () => {
 
-    })
+    // })
 
-    test("Returns error with status code 404 for a nonexistent job ID", async () => {
+    // test("Returns error with status code 404 for a nonexistent job ID", async () => {
 
-    })
+    // })
 })
 
 //-------------------------------------------------------------------------------------------------
