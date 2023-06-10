@@ -1,9 +1,9 @@
 // Ioana A Mititean
 // Unit 35 - Jobly
 
-"use strict";
-
 /** Express app for jobly. */
+
+"use strict";
 
 const express = require("express");
 const cors = require("cors");

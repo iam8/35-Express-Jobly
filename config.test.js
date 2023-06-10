@@ -1,6 +1,10 @@
 // Ioana A Mititean
 // Unit 35 - Jobly
 
+/**
+ * Tests for Jobly app config file.
+ */
+
 "use strict";
 
 

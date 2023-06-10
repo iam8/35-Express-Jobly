@@ -1,6 +1,11 @@
 // Ioana A Mititean
 // Unit 35 - Jobly
 
+/**
+ * Basic tests for Jobly app - trying to GET a nonexistent path.
+ */
+
+
 const request = require("supertest");
 
 const app = require("./app");

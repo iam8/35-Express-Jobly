@@ -1,12 +1,13 @@
 // Ioana A Mititean
 // Unit 35 - Jobly
 
+/** Database setup for jobly. */
+
 "use strict";
 
-
-/** Database setup for jobly. */
 const { Client } = require("pg");
 const { getDatabaseUri } = require("./config");
+
 
 let db;
 

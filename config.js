@@ -1,9 +1,9 @@
 // Ioana A Mititean
 // Unit 35 - Jobly
 
-"use strict";
-
 /** Shared config for application; can be required many places. */
+
+"use strict";
 
 require("dotenv").config();
 require("colors");
