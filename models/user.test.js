@@ -290,9 +290,14 @@ describe("Applying for a job", () => {
         }
     })
 
-    // test("Returns error (status 404) for a nonexistent job ID", async () => {
+    test("Returns error (status 404) for a nonexistent job ID", async () => {
 
-    // })
+        try {
+            await User.applyForJob("u1", 0);
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError("No job found: '0'"));
+        }
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
