@@ -19,6 +19,27 @@ beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
 
+
+// HELPERS FOR TESTS ------------------------------------------------------------------------------
+
+/**
+ * Get the ID of the job with the given title from the database.
+ *
+ * Returns: job ID (integer)
+ */
+async function getId(jobTitle) {
+    const idRes = await db.query(`
+        SELECT id FROM jobs
+        WHERE title = $1`,
+        [jobTitle]
+    );
+
+    return idRes.rows[0].id;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+
 /************************************** authenticate */
 
 describe("authenticate", function () {
@@ -236,15 +257,33 @@ describe("Applying for a job", () => {
 
     test("Works for appropriate inputs", async () => {
 
+        // Grab ID of job1 from database
+        const jobId = await getId("job1");
+
+        const application = await User.applyForJob("u1", jobId);
+
+        // Check return value
+        expect(application).toEqual({
+            username: "u1",
+            jobId
+        });
+
+        // Check that database is updated accordingly
+        const appRes = await db.query(`
+            SELECT username, job_id FROM applications
+            WHERE username = $1 AND job_id = $2`,
+            ["u1", jobId]);
+
+        expect(appRes.rows.length).toEqual(1);
     })
 
-    test("Returns error (status 404) for a nonexistent username", async () => {
+    // test("Returns error (status 404) for a nonexistent username", async () => {
 
-    })
+    // })
 
-    test("Returns error (status 404) for a nonexistent job ID", async () => {
+    // test("Returns error (status 404) for a nonexistent job ID", async () => {
 
-    })
+    // })
 })
 
 //-------------------------------------------------------------------------------------------------
