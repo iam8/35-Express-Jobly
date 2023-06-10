@@ -278,9 +278,17 @@ describe("Applying for a job", () => {
         expect(appRes.rows.length).toEqual(1);
     })
 
-    // test("Returns error (status 404) for a nonexistent username", async () => {
+    test("Returns error (status 404) for a nonexistent username", async () => {
 
-    // })
+        // Grab ID of job1 from database
+        const jobId = await getId("job1");
+
+        try {
+            await User.applyForJob("nonexistent", jobId);
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError("No user found: 'nonexistent'"));
+        }
+    })
 
     // test("Returns error (status 404) for a nonexistent job ID", async () => {
 
