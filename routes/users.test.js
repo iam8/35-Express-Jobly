@@ -485,21 +485,74 @@ describe("POST /users/:username/jobs/:id", () => {
         });
     })
 
-    // test("Returns error with status code 401 for a logged-out user", async () => {
+    test("Returns error with status code 401 for a logged-out user", async () => {
 
-    // })
+        // Grab ID of job1 from database
+        const jobId = await getId("job1");
 
-    // test("Returns error with status code 401 for a non-admin, non-corresponding user", async () => {
+        const resp = await request(app)
+            .post(`/users/u1/jobs/${jobId}`);
 
-    // })
+        expect(resp.statusCode).toEqual(401);
+        expect(resp.body).toEqual({
+            error: {
+                status: 401,
+                message: "Unauthorized"
+            }
+        });
+    })
 
-    // test("Returns error with status code 404 for a nonexistent username", async () => {
+    test("Returns error with status code 401 for a non-admin, non-corresponding user",
+    async () => {
 
-    // })
+        // Grab ID of job1 from database
+        const jobId = await getId("job1");
 
-    // test("Returns error with status code 404 for a nonexistent job ID", async () => {
+        const resp = await request(app)
+            .post(`/users/u2/jobs/${jobId}`)
+            .set("authorization", basicAuth);
 
-    // })
+        expect(resp.statusCode).toEqual(401);
+        expect(resp.body).toEqual({
+            error: {
+                status: 401,
+                message: "Unauthorized"
+            }
+        });
+    })
+
+    test("Returns error with status code 404 for a nonexistent username", async () => {
+
+        // Grab ID of job1 from database
+        const jobId = await getId("job1");
+
+        const resp = await request(app)
+            .post(`/users/nonexistent/jobs/${jobId}`)
+            .set("authorization", adminAuth);
+
+        expect(resp.statusCode).toEqual(404);
+        expect(resp.body).toEqual({
+            error: {
+                status: 404,
+                message: "No user found: 'nonexistent'"
+            }
+        });
+    })
+
+    test("Returns error with status code 404 for a nonexistent job ID", async () => {
+
+        const resp = await request(app)
+            .post(`/users/u1/jobs/0`)
+            .set("authorization", adminAuth);
+
+        expect(resp.statusCode).toEqual(404);
+        expect(resp.body).toEqual({
+            error: {
+                status: 404,
+                message: "No job found: '0'"
+            }
+        });
+    })
 })
 
 //-------------------------------------------------------------------------------------------------
