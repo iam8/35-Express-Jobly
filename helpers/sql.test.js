@@ -8,6 +8,7 @@
 const { BadRequestError } = require("../expressError");
 const { sqlForPartialUpdate } = require("./sql");
 
+
 describe("Tests for sqlForPartialUpdate()", () => {
 
     test("Throws BadRequestError for empty dataToUpdate object", () => {
