@@ -5,7 +5,6 @@
  * Routes for jobs.
  */
 
-// TODO: JSONSchema validation
 
 "use strict";
 
@@ -32,7 +31,6 @@ const router = new express.Router();
  */
 router.post("/", ensureAdmin, async (req, res, next) => {
     try {
-        // TODO: JSONschema validation
         const validator = jsonschema.validate(req.body, jobNewSchema);
         if (!validator.valid) {
             const errs = validator.errors.map(e => e.stack);
@@ -123,7 +121,6 @@ router.get("/:id", async (req, res, next) => {
  */
 router.patch("/:id", ensureAdmin, async (req, res, next) => {
     try {
-        // TODO: JsonSchema validation
         const validator = jsonschema.validate(req.body, jobUpdateSchema);
         if (!validator.valid) {
             const errs = validator.errors.map(e => e.stack);
