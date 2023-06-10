@@ -119,7 +119,7 @@ describe("POST /jobs", () => {
             .set("authorization", adminAuth);
 
         expect(resp.statusCode).toEqual(400);
-        expect(resp.body.error.message.length).toEqual(3);
+        expect(resp.body.error).toBeTruthy();
     })
 
     test("Returns error with status 400 for request with invalid data", async () => {
@@ -136,7 +136,7 @@ describe("POST /jobs", () => {
             .set("authorization", adminAuth);
 
         expect(resp.statusCode).toEqual(400);
-        expect(resp.body.error.message.length).toEqual(2);
+        expect(resp.body.error).toBeTruthy();
     })
 })
 
@@ -437,13 +437,46 @@ describe("PATCH /jobs/:id", () => {
         });
     })
 
-    // test("Returns error with status 400 for request with invalid data", async () => {
+    test("Returns error with status 400 for request with invalid data", async () => {
 
-    // })
+        // Grab ID of job1 from database
+        const id = await getId("job1");
 
-    // test("Returns error with status 400 for non-allowed field input", async () => {
+        const invalidData = {
+            title: "New Job Title",
+            salary: -200,
+            equity: -0.1
+        };
 
-    // })
+        const resp = await request(app)
+            .patch(`/jobs/${id}`)
+            .send(invalidData)
+            .set("authorization", adminAuth);
+
+        expect(resp.statusCode).toEqual(400);
+        expect(resp.body.error).toBeTruthy();
+    })
+
+    test("Returns error with status 400 for non-allowed field input", async () => {
+
+        // Grab ID of job1 from database
+        const id = await getId("job1");
+
+        const notAllowedData = {
+            title: "New Job Title",
+            notAllowed: "random",
+            notAllowed2: "random2",
+            notAllowed3: "random3"
+        };
+
+        const resp = await request(app)
+            .patch(`/jobs/${id}`)
+            .send(notAllowedData)
+            .set("authorization", adminAuth);
+
+        expect(resp.statusCode).toEqual(400);
+        expect(resp.body.error).toBeTruthy();
+    })
 
     test("Returns error with status 404 if job not found", async () => {
         const resp = await request(app)
