@@ -257,8 +257,8 @@ describe("Applying for a job", () => {
 
     test("Works for appropriate inputs", async () => {
 
-        // Grab ID of job1 from database
-        const jobId = await getId("job1");
+        // Grab ID of job5 from database
+        const jobId = await getId("job5");
 
         const application = await User.applyForJob("u1", jobId);
 
@@ -281,7 +281,7 @@ describe("Applying for a job", () => {
     test("Returns error (status 404) for a nonexistent username", async () => {
 
         // Grab ID of job1 from database
-        const jobId = await getId("job1");
+        const jobId = await getId("job5");
 
         try {
             await User.applyForJob("nonexistent", jobId);
