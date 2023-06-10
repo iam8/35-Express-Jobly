@@ -153,25 +153,34 @@ describe("findAll", function () {
 /************************************** get */
 
 describe("get", function () {
-  test("works", async function () {
-    let user = await User.get("u1");
-    expect(user).toEqual({
-      username: "u1",
-      firstName: "U1F",
-      lastName: "U1L",
-      email: "u1@email.com",
-      isAdmin: false,
-    });
-  });
 
-  test("not found if no such user", async function () {
-    try {
-      await User.get("nope");
-      fail();
-    } catch (err) {
-      expect(err instanceof NotFoundError).toBeTruthy();
-    }
-  });
+    test("Works for user with job applications", async function () {
+
+        // Get job IDs from database
+        const jobId1 = await getId("job1");
+        const jobId2 = await getId("job2");
+        const jobId3 = await getId("job3");
+
+        let user = await User.get("u1");
+
+        expect(user).toEqual({
+            username: "u1",
+            firstName: "U1F",
+            lastName: "U1L",
+            email: "u1@email.com",
+            isAdmin: false,
+            jobs: [jobId1, jobId2, jobId3]
+        });
+    });
+
+    test("not found if no such user", async function () {
+        try {
+            await User.get("nope");
+            fail();
+        } catch (err) {
+            expect(err instanceof NotFoundError).toBeTruthy();
+        }
+    });
 });
 
 /************************************** update */
