@@ -468,7 +468,7 @@ describe("POST /users/:username/jobs/:id", () => {
     test("Works for admins", async () => {
 
         // Grab ID of job1 from database
-        const jobId = await getId("job1");
+        const jobId = await getId("job3");
 
         const resp = await request(app)
             .post(`/users/u1/jobs/${jobId}`)
@@ -482,8 +482,8 @@ describe("POST /users/:username/jobs/:id", () => {
 
     test("Works for logged-in, corresponding, non-admin user", async () => {
 
-        // Grab ID of job1 from database
-        const jobId = await getId("job1");
+        // Grab ID of job3 from database
+        const jobId = await getId("job3");
 
         const resp = await request(app)
             .post(`/users/u1/jobs/${jobId}`)
@@ -498,7 +498,7 @@ describe("POST /users/:username/jobs/:id", () => {
     test("Returns error with status code 401 for a logged-out user", async () => {
 
         // Grab ID of job1 from database
-        const jobId = await getId("job1");
+        const jobId = await getId("job3");
 
         const resp = await request(app)
             .post(`/users/u1/jobs/${jobId}`);
