@@ -228,3 +228,23 @@ describe("remove", function () {
     }
   });
 });
+
+
+// APPLY FOR JOB ----------------------------------------------------------------------------------
+
+describe("Applying for a job", () => {
+
+    test("Works for appropriate inputs", async () => {
+
+    })
+
+    test("Returns error (status 404) for a nonexistent username", async () => {
+
+    })
+
+    test("Returns error (status 404) for a nonexistent job ID", async () => {
+
+    })
+})
+
+//-------------------------------------------------------------------------------------------------
