@@ -1,3 +1,6 @@
+// Ioana A Mititean
+// Unit 35 - Jobly
+
 "use strict";
 
 /** Convenience middleware to handle common auth cases in routes. */
@@ -14,32 +17,31 @@ const { UnauthorizedError } = require("../expressError");
  *
  * It's not an error if no token was provided or if the token is not valid.
  */
-
 function authenticateJWT(req, res, next) {
-  try {
-    const authHeader = req.headers && req.headers.authorization;
-    if (authHeader) {
-      const token = authHeader.replace(/^[Bb]earer /, "").trim();
-      res.locals.user = jwt.verify(token, SECRET_KEY);
+    try {
+        const authHeader = req.headers && req.headers.authorization;
+        if (authHeader) {
+            const token = authHeader.replace(/^[Bb]earer /, "").trim();
+            res.locals.user = jwt.verify(token, SECRET_KEY);
+        }
+
+        return next();
+    } catch (err) {
+        return next();
     }
-    return next();
-  } catch (err) {
-    return next();
-  }
 }
 
 /** Middleware to use when they must be logged in.
  *
  * If not, raises Unauthorized.
  */
-
 function ensureLoggedIn(req, res, next) {
-  try {
-    if (!res.locals.user) throw new UnauthorizedError();
-    return next();
-  } catch (err) {
-    return next(err);
-  }
+    try {
+        if (!res.locals.user) throw new UnauthorizedError();
+        return next();
+    } catch (err) {
+        return next(err);
+    }
 }
 
 
