@@ -215,7 +215,6 @@ class User {
      * Throw error (status 404) if no username with the given username exists.
      *
      * Throw error (status 404) if no job with the given ID exists.
-     *
      */
     static async applyForJob(username, jobId) {
 
@@ -227,7 +226,7 @@ class User {
         );
 
         if (userRes.rows[0] === undefined) {
-            throw new NotFoundError(`No user found: ${username}`);
+            throw new NotFoundError(`No user found: '${username}'`);
         }
 
         // Check for job existence
