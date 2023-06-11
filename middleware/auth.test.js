@@ -165,4 +165,54 @@ describe("ensureAdmin", () => {
 
 describe("ensureAdminOrSpecificUser", () => {
 
+    test("Works for logged-in admin, corresponding user", () => {
+        expect.assertions(1);
+
+        const req = {
+            params: {
+                username: "test"
+            }
+        };
+
+        const res = {
+            locals: {
+                user: {
+                    username: "test",
+                    isAdmin: true
+                }
+            }
+        };
+
+        const next = (err) => {
+            expect(err).toBeFalsy();
+        };
+
+        ensureAdminOrSpecificUser(req, res, next);
+    })
+
+    test("Works for logged-in admin, non-corresponding user", () => {
+        expect.assertions(1);
+
+        const req = {
+            params: {
+                username: "test-other"
+            }
+        };
+
+        const res = {
+            locals: {
+                user: {
+                    username: "test",
+                    isAdmin: true
+                }
+            }
+        };
+
+        const next = (err) => {
+            expect(err).toBeFalsy();
+        };
+
+        ensureAdminOrSpecificUser(req, res, next);
+    })
+
 })
