@@ -10,25 +10,27 @@
 const db = require("../db");
 const bcrypt = require("bcrypt");
 const { sqlForPartialUpdate } = require("../helpers/sql");
+
 const {
-  NotFoundError,
-  BadRequestError,
-  UnauthorizedError,
+    NotFoundError,
+    BadRequestError,
+    UnauthorizedError,
 } = require("../expressError");
 
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
-/** Related functions for users. */
 
+/** Related functions for users. */
 class User {
+
     /** authenticate user with username, password.
      *
      * Returns { username, first_name, last_name, email, is_admin }
      *
      * Throws UnauthorizedError is user not found or wrong password.
      **/
-
     static async authenticate(username, password) {
+
         // try to find the user first
         const result = await db.query(
             `SELECT username,
@@ -45,6 +47,7 @@ class User {
         const user = result.rows[0];
 
         if (user) {
+
             // compare hashed password to a new hash from password
             const isValid = await bcrypt.compare(password, user.password);
             if (isValid === true) {
@@ -62,9 +65,7 @@ class User {
      *
      * Throws BadRequestError on duplicates.
      **/
-
-    static async register(
-        { username, password, firstName, lastName, email, isAdmin }) {
+    static async register({ username, password, firstName, lastName, email, isAdmin }) {
         const duplicateCheck = await db.query(
             `SELECT username
             FROM users
@@ -99,7 +100,6 @@ class User {
         );
 
         const user = result.rows[0];
-
         return user;
     }
 
@@ -107,7 +107,6 @@ class User {
      *
      * Returns [{ username, first_name, last_name, email, is_admin }, ...]
      **/
-
     static async findAll() {
         const result = await db.query(
             `SELECT username,
@@ -129,7 +128,6 @@ class User {
      *
      * Throws NotFoundError if user not found.
      **/
-
     static async get(username) {
         const userRes = await db.query(
             `SELECT users.username,
@@ -151,9 +149,6 @@ class User {
 
         const { username: uname, firstName, lastName, email, isAdmin } = userRes.rows[0];
         const id = userRes.rows[0].id;
-
-        // console.log("USER VALUES RESULTS: ", uname, firstName, lastName, email, isAdmin);
-        // console.log("JOB ID RESULT: ", id);
 
         // Handle cases: user with vs without applications
         let jobs = [];
@@ -182,7 +177,6 @@ class User {
      * Callers of this function must be certain they have validated inputs to this
      * or a serious security risks are opened.
      */
-
     static async update(username, data) {
         if (data.password) {
             data.password = await bcrypt.hash(data.password, BCRYPT_WORK_FACTOR);
@@ -195,8 +189,8 @@ class User {
                 lastName: "last_name",
                 isAdmin: "is_admin",
             });
-        const usernameVarIdx = "$" + (values.length + 1);
 
+        const usernameVarIdx = "$" + (values.length + 1);
         const querySql = `UPDATE users
                         SET ${setCols}
                         WHERE username = ${usernameVarIdx}
@@ -215,7 +209,6 @@ class User {
     }
 
     /** Delete given user from database; returns undefined. */
-
     static async remove(username) {
         let result = await db.query(
             `DELETE
