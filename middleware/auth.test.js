@@ -215,4 +215,16 @@ describe("ensureAdminOrSpecificUser", () => {
         ensureAdminOrSpecificUser(req, res, next);
     })
 
+    test("Works for logged-in, corresponding, non-admin user", () => {
+
+    })
+
+    test("Returns UnauthorizedError for a logged-in, non-corresponding, non-admin user", () => {
+
+    })
+
+    test("Returns UnauthorizedError for a user who isn't logged in", () => {
+
+    })
+
 })
