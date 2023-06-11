@@ -12,6 +12,7 @@ const { BadRequestError, NotFoundError } = require("../expressError");
 const { Job } = require("./job.js");
 
 const {
+    getJobId,
     commonBeforeAll,
     commonBeforeEach,
     commonAfterEach,
@@ -93,7 +94,6 @@ describe("Testing create() method", () => {
                 .toEqual(new BadRequestError("Company handle doesn't exist: 'nonexistent'"));
         }
     })
-
 })
 
 //-------------------------------------------------------------------------------------------------
@@ -143,8 +143,6 @@ describe("Testing findAll() method", () => {
             }
         ]);
     })
-
-    // TODO: tests for filters
 
     test("Only title filter applied (upper and lower case)", async () => {
         const jobUpper = await Job.findAll({title: "JOB1"});
@@ -329,12 +327,12 @@ describe("Testing get() method", () => {
     test("Functions correctly with appropriate input", async () => {
 
         // Get ID of job 1 from database
-        let jobRes = await db.query(`
-            SELECT id FROM jobs
-            WHERE title = 'job1'`
-        );
+        // let jobRes = await db.query(`
+        //     SELECT id FROM jobs
+        //     WHERE title = 'job1'`
+        // );
 
-        const jobId = jobRes.rows[0].id;
+        const jobId = await getJobId("job1");
         let job = await Job.get(jobId);
 
         expect(job).toEqual({
@@ -382,12 +380,12 @@ describe("Testing update() method", () => {
     test("Throws BadRequestError when given no input data", async () => {
 
         // Get ID of job 1 from database
-        let jobRes = await db.query(`
-            SELECT id FROM jobs
-            WHERE title = 'job1'`
-        );
+        // let jobRes = await db.query(`
+        //     SELECT id FROM jobs
+        //     WHERE title = 'job1'`
+        // );
 
-        const jobId = jobRes.rows[0].id;
+        const jobId = await getJobId("job1");
 
         try {
             await Job.update(jobId, {});
@@ -400,12 +398,12 @@ describe("Testing update() method", () => {
     test("Works correctly for partial update", async () => {
 
         // Get ID of job 1 from database
-        let jobRes = await db.query(`
-            SELECT id FROM jobs
-            WHERE title = 'job1'`
-        );
+        // let jobRes = await db.query(`
+        //     SELECT id FROM jobs
+        //     WHERE title = 'job1'`
+        // );
 
-        const jobId = jobRes.rows[0].id;
+        const jobId = await getJobId("job1");
         const expectedData = {
             id: jobId,
             title: "job1",
@@ -431,12 +429,12 @@ describe("Testing update() method", () => {
     test("Works correctly for full update", async () => {
 
         // Get ID of job 1 from database
-        let jobRes = await db.query(`
-            SELECT id FROM jobs
-            WHERE title = 'job1'`
-        );
+        // let jobRes = await db.query(`
+        //     SELECT id FROM jobs
+        //     WHERE title = 'job1'`
+        // );
 
-        const jobId = jobRes.rows[0].id;
+        const jobId = await getJobId("job1");
         const expectedData = {
             id: jobId,
             title: "Updated Job Title",
@@ -462,12 +460,12 @@ describe("Testing update() method", () => {
     test("Throws BadRequestError for non-allowed fields in data", async () => {
 
         // Get ID of job 1 from database
-        let jobRes = await db.query(`
-            SELECT id FROM jobs
-            WHERE title = 'job1'`
-        );
+        // let jobRes = await db.query(`
+        //     SELECT id FROM jobs
+        //     WHERE title = 'job1'`
+        // );
 
-        const jobId = jobRes.rows[0].id;
+        const jobId = await getJobId("job1");
         const expectedData = {
             id: jobId,
             title: "job1",
@@ -514,12 +512,12 @@ describe("Testing remove() method", () => {
     test("Functions correctly with appropriate input", async () => {
 
         // Get ID of job 1 from database
-        let jobRes = await db.query(`
-            SELECT id FROM jobs
-            WHERE title = 'job1'`
-        );
+        // let jobRes = await db.query(`
+        //     SELECT id FROM jobs
+        //     WHERE title = 'job1'`
+        // );
 
-        const jobId = jobRes.rows[0].id;
+        const jobId = await getJobId("job1");
         await Job.remove(jobId);
 
         const qRes = await db.query(`
