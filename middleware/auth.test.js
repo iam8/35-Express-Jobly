@@ -107,6 +107,8 @@ describe("ensureLoggedIn", function () {
 describe("ensureAdmin", () => {
 
     test("Works for logged-in admin", () => {
+        expect.assertions(1);
+
         const req = {};
         const res = {
             locals: {
