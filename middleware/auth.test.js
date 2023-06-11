@@ -216,15 +216,72 @@ describe("ensureAdminOrSpecificUser", () => {
     })
 
     test("Works for logged-in, corresponding, non-admin user", () => {
+        expect.assertions(1);
 
+        const req = {
+            params: {
+                username: "test"
+            }
+        };
+
+        const res = {
+            locals: {
+                user: {
+                    username: "test",
+                    isAdmin: false
+                }
+            }
+        };
+
+        const next = (err) => {
+            expect(err).toBeFalsy();
+        };
+
+        ensureAdminOrSpecificUser(req, res, next);
     })
 
     test("Returns UnauthorizedError for a logged-in, non-corresponding, non-admin user", () => {
+        expect.assertions(1);
 
+        const req = {
+            params: {
+                username: "test-other"
+            }
+        };
+
+        const res = {
+            locals: {
+                user: {
+                    username: "test",
+                    isAdmin: false
+                }
+            }
+        };
+
+        const next = (err) => {
+            expect(err instanceof UnauthorizedError).toBeTruthy();
+        };
+
+        ensureAdminOrSpecificUser(req, res, next);
     })
 
     test("Returns UnauthorizedError for a user who isn't logged in", () => {
+        expect.assertions(1);
 
+        const req = {
+            params: {
+                username: "test"
+            }
+        };
+
+        const res = {
+            locals: {}
+        };
+
+        const next = (err) => {
+            expect(err instanceof UnauthorizedError).toBeTruthy();
+        };
+
+        ensureAdminOrSpecificUser(req, res, next);
     })
-
 })
