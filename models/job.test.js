@@ -73,7 +73,6 @@ describe("Testing create() method", () => {
 
         try {
             await Job.create(newJob);
-
         } catch(err) {
             expect(err).toEqual(new BadRequestError("Duplicate job: 'job1'"));
         }
@@ -92,7 +91,6 @@ describe("Testing create() method", () => {
 
         try {
             await Job.create(newJob);
-
         } catch(err) {
             expect(err)
                 .toEqual(new BadRequestError("Company handle doesn't exist: 'nonexistent'"));
@@ -349,7 +347,6 @@ describe("Testing get() method", () => {
 
         try {
             await Job.get(0);
-
         } catch(err) {
             expect(err).toEqual(new NotFoundError("Job not found: '0'"));
         }
@@ -380,17 +377,34 @@ describe("Testing update() method", () => {
     };
 
     test("Throws BadRequestError when given no input data", async () => {
-        expect.assertions(1);
+        expect.assertions(2);
 
         // Get ID of job 1 from database
         const jobId = await getJobId("job1");
 
+        const originalData = {
+            id: jobId,
+            title: "job1",
+            salary: 100,
+            equity: "0.1",
+            companyHandle: "c1"
+        };
+
         try {
             await Job.update(jobId, {});
-
         } catch (err) {
             expect(err instanceof BadRequestError).toBeTruthy();
         }
+
+        // Check that entry was not modified in database
+        const qRes = await db.query(`
+            SELECT id, title, salary, equity, company_handle AS "companyHandle"
+            FROM jobs
+            WHERE id = $1`,
+            [jobId]
+        );
+
+        expect(qRes.rows[0]).toEqual(originalData);
     })
 
     test("Works correctly for partial update", async () => {
@@ -453,7 +467,7 @@ describe("Testing update() method", () => {
         // Get ID of job 1 from database
         const jobId = await getJobId("job1");
 
-        const expectedData = {
+        const originalData = {
             id: jobId,
             title: "job1",
             salary: 100,
@@ -463,7 +477,6 @@ describe("Testing update() method", () => {
 
         try {
             await Job.update(jobId, notAllowedData);
-
         } catch(err) {
             expect(err).toEqual(new BadRequestError("Data field not allowed: 'id'"));
         }
@@ -476,7 +489,7 @@ describe("Testing update() method", () => {
             [jobId]
         );
 
-        expect(qRes.rows[0]).toEqual(expectedData);
+        expect(qRes.rows[0]).toEqual(originalData);
     })
 
     test("Throws NotFoundError for a nonexistent job ID", async () => {
@@ -484,7 +497,6 @@ describe("Testing update() method", () => {
 
         try {
             await Job.update(0, fullData);
-
         } catch(err) {
             expect(err).toEqual(new NotFoundError("No job found: 0"));
         }
@@ -519,7 +531,6 @@ describe("Testing remove() method", () => {
 
         try {
             await Job.remove(0);
-
         } catch(err) {
             expect(err).toEqual(new NotFoundError("No job found: 0"));
         }
