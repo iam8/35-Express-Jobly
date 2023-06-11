@@ -1,3 +1,10 @@
+// Ioana A Mititean
+// Unit 35 - Express Jobly
+
+/**
+ * User class.
+ */
+
 "use strict";
 
 const db = require("../db");
