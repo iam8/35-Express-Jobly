@@ -1,43 +1,33 @@
+// Ioana A Mititean
+// Unit 35 - Express Jobly
+
+/**
+ * Tests for the User model.
+ */
+
 "use strict";
 
 const {
-  NotFoundError,
-  BadRequestError,
-  UnauthorizedError,
+    NotFoundError,
+    BadRequestError,
+    UnauthorizedError,
 } = require("../expressError");
+
 const db = require("../db.js");
 const User = require("./user.js");
+
 const {
-  commonBeforeAll,
-  commonBeforeEach,
-  commonAfterEach,
-  commonAfterAll,
+    getJobId,
+    commonBeforeAll,
+    commonBeforeEach,
+    commonAfterEach,
+    commonAfterAll,
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
-
-
-// HELPERS FOR TESTS ------------------------------------------------------------------------------
-
-/**
- * Get the ID of the job with the given title from the database.
- *
- * Returns: job ID (integer)
- */
-async function getId(jobTitle) {
-    const idRes = await db.query(`
-        SELECT id FROM jobs
-        WHERE title = $1`,
-        [jobTitle]
-    );
-
-    return idRes.rows[0].id;
-}
-
-//-------------------------------------------------------------------------------------------------
 
 
 /************************************** authenticate */
