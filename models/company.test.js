@@ -58,10 +58,11 @@ describe("create", function () {
     });
 
     test("bad request with dupe", async function () {
+        expect.assertions(1);
+
         try {
             await Company.create(newCompany);
             await Company.create(newCompany);
-            fail();
         } catch (err) {
             expect(err instanceof BadRequestError).toBeTruthy();
         }
@@ -214,9 +215,10 @@ describe("get", function () {
     })
 
     test("not found if no such company", async function () {
+        expect.assertions(1);
+
         try {
             await Company.get("nope");
-            fail();
         } catch (err) {
             expect(err instanceof NotFoundError).toBeTruthy();
         }
@@ -287,18 +289,20 @@ describe("update", function () {
     });
 
     test("not found if no such company", async function () {
+        expect.assertions(1);
+
         try {
             await Company.update("nope", updateData);
-            fail();
         } catch (err) {
             expect(err instanceof NotFoundError).toBeTruthy();
         }
     });
 
     test("bad request with no data", async function () {
+        expect.assertions(1);
+
         try {
             await Company.update("c1", {});
-            fail();
         } catch (err) {
             expect(err instanceof BadRequestError).toBeTruthy();
         }
@@ -318,9 +322,10 @@ describe("remove", function () {
     });
 
     test("not found if no such company", async function () {
+        expect.assertions(1);
+
         try {
             await Company.remove("nope");
-            fail();
         } catch (err) {
             expect(err instanceof NotFoundError).toBeTruthy();
         }
