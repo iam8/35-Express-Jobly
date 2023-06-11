@@ -1,3 +1,10 @@
+// Ioana A Mititean
+// Unit 35 - Jobly
+
+/**
+ * Setup functions for Jobly route tests.
+ */
+
 "use strict";
 
 const db = require("../db.js");
@@ -30,9 +37,7 @@ async function getJobId(jobTitle) {
 async function commonBeforeAll() {
     await db.query("DELETE FROM applications"); // Just in case
     await db.query("DELETE FROM jobs");
-    // noinspection SqlWithoutWhere
     await db.query("DELETE FROM users");
-    // noinspection SqlWithoutWhere
     await db.query("DELETE FROM companies");
 
     await Company.create(
@@ -110,7 +115,7 @@ async function commonBeforeAll() {
         companyHandle: "c3"
     });
 
-    const job4 = await Job.create({
+    await Job.create({
         title: "job4",
         salary: 400,
         equity: 0.4,
@@ -141,10 +146,10 @@ const u2Token = createToken({ username: "u2", isAdmin: true });
 
 module.exports = {
     getJobId,
-  commonBeforeAll,
-  commonBeforeEach,
-  commonAfterEach,
-  commonAfterAll,
-  u1Token,
-  u2Token
+    commonBeforeAll,
+    commonBeforeEach,
+    commonAfterEach,
+    commonAfterAll,
+    u1Token,
+    u2Token
 };
