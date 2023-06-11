@@ -6,7 +6,6 @@
 "use strict";
 
 const express = require("express");
-const router = new express.Router();
 const jsonschema = require("jsonschema");
 
 const User = require("../models/user");
@@ -15,6 +14,9 @@ const { createToken } = require("../helpers/tokens");
 const userAuthSchema = require("../schemas/userAuth.json");
 const userRegisterSchema = require("../schemas/userRegister.json");
 const { BadRequestError } = require("../expressError");
+
+
+const router = new express.Router();
 
 
 /** POST /auth/token:  { username, password } => { token }
