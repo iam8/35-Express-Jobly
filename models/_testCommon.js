@@ -1,3 +1,10 @@
+// Ioana A Mititean
+// Unit 35 - Jobly
+
+/**
+ * Setup functions for Jobly model tests.
+ */
+
 const bcrypt = require("bcrypt");
 
 const db = require("../db.js");
@@ -7,9 +14,7 @@ const { BCRYPT_WORK_FACTOR } = require("../config");
 async function commonBeforeAll() {
     await db.query("DELETE FROM applications"); // Just in case
     await db.query("DELETE FROM jobs");
-    // noinspection SqlWithoutWhere
     await db.query("DELETE FROM companies");
-    // noinspection SqlWithoutWhere
     await db.query("DELETE FROM users");
 
     await db.query(`
@@ -34,7 +39,6 @@ async function commonBeforeAll() {
     );
 
     const uname1 = userInsert.rows[0].username;
-    const uname2 = userInsert.rows[1].username;
 
     const jobInsert = await db.query(`
         INSERT INTO jobs
@@ -52,8 +56,6 @@ async function commonBeforeAll() {
     const jobId2 = jobInsert.rows[1].id;
     const jobId3 = jobInsert.rows[2].id;
 
-    console.log("JOB IDS: ", jobId1, jobId2, jobId3);
-
     await db.query(`
         INSERT INTO applications
             (username, job_id)
@@ -65,15 +67,15 @@ async function commonBeforeAll() {
 }
 
 async function commonBeforeEach() {
-  await db.query("BEGIN");
+    await db.query("BEGIN");
 }
 
 async function commonAfterEach() {
-  await db.query("ROLLBACK");
+    await db.query("ROLLBACK");
 }
 
 async function commonAfterAll() {
-  await db.end();
+    await db.end();
 }
 
 
