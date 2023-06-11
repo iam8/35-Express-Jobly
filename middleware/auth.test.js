@@ -146,9 +146,20 @@ describe("ensureAdmin", () => {
         ensureAdmin(req, res, next);
     })
 
-    // test("Returns UnauthorizedError for a user who isn't logged in", () => {
+    test("Returns UnauthorizedError for a user who isn't logged in", () => {
+        expect.assertions(1);
 
-    // })
+        const req = {};
+        const res = {
+            locals: {}
+        };
+
+        const next = (err) => {
+            expect(err instanceof UnauthorizedError).toBeTruthy();
+        };
+
+        ensureAdmin(req, res, next);
+    })
 })
 
 
