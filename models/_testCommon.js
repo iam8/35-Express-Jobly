@@ -11,6 +11,26 @@ const db = require("../db.js");
 const { BCRYPT_WORK_FACTOR } = require("../config");
 
 
+// HELPERS FOR TESTS ------------------------------------------------------------------------------
+
+/**
+ * Get the ID of the job with the given title from the database.
+ *
+ * Returns: job ID (integer)
+ */
+async function getJobId(jobTitle) {
+    const idRes = await db.query(`
+        SELECT id FROM jobs
+        WHERE title = $1`,
+        [jobTitle]
+    );
+
+    return idRes.rows[0].id;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+
 async function commonBeforeAll() {
     await db.query("DELETE FROM applications"); // Just in case
     await db.query("DELETE FROM jobs");
@@ -80,6 +100,7 @@ async function commonAfterAll() {
 
 
 module.exports = {
+    getJobId,
     commonBeforeAll,
     commonBeforeEach,
     commonAfterEach,
