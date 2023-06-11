@@ -14,7 +14,7 @@ const { createToken } = require("../helpers/tokens");
  *
  * Returns: job ID (integer)
  */
-async function getId(jobTitle) {
+async function getJobId(jobTitle) {
     const idRes = await db.query(`
         SELECT id FROM jobs
         WHERE title = $1`,
@@ -140,6 +140,7 @@ const u2Token = createToken({ username: "u2", isAdmin: true });
 
 
 module.exports = {
+    getJobId,
   commonBeforeAll,
   commonBeforeEach,
   commonAfterEach,
