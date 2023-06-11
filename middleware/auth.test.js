@@ -82,7 +82,7 @@ describe("ensureLoggedIn", function () {
         expect.assertions(1);
 
         const req = {};
-        const res = { locals: { user: { username: "test", is_admin: false } } };
+        const res = { locals: { user: { username: "test", isAdmin: false } } };
         const next = function (err) {
             expect(err).toBeFalsy();
         };
@@ -107,16 +107,30 @@ describe("ensureLoggedIn", function () {
 describe("ensureAdmin", () => {
 
     test("Works for logged-in admin", () => {
+        const req = {};
+        const res = {
+            locals: {
+                user: {
+                    username: "test",
+                    isAdmin: true
+                }
+            }
+        };
 
+        const next = (err) => {
+            expect(err).toBeFalsy();
+        };
+
+        ensureAdmin(req, res, next);
     })
 
-    test("Returns UnauthorizedError for a logged-in, non-admin user", () => {
+    // test("Returns UnauthorizedError for a logged-in, non-admin user", () => {
 
-    })
+    // })
 
-    test("Returns UnauthorizedError for a user who isn't logged in", () => {
+    // test("Returns UnauthorizedError for a user who isn't logged in", () => {
 
-    })
+    // })
 })
 
 
