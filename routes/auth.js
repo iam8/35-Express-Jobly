@@ -1,16 +1,21 @@
-"use strict";
+// Ioana A Mititean
+// Unit 35 - Jobly
 
 /** Routes for authentication. */
 
+"use strict";
+
+const express = require("express");
+const router = new express.Router();
 const jsonschema = require("jsonschema");
 
 const User = require("../models/user");
-const express = require("express");
-const router = new express.Router();
+
 const { createToken } = require("../helpers/tokens");
 const userAuthSchema = require("../schemas/userAuth.json");
 const userRegisterSchema = require("../schemas/userRegister.json");
 const { BadRequestError } = require("../expressError");
+
 
 /** POST /auth/token:  { username, password } => { token }
  *
@@ -18,7 +23,6 @@ const { BadRequestError } = require("../expressError");
  *
  * Authorization required: none
  */
-
 router.post("/token", async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, userAuthSchema);
