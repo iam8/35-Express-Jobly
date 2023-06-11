@@ -71,7 +71,7 @@ describe("Testing create() method", () => {
 
         try {
             await Job.create(newJob);
-            // fail();
+            fail();
         } catch(err) {
             expect(err).toEqual(new BadRequestError("Duplicate job: 'job1'"));
         }
@@ -88,7 +88,7 @@ describe("Testing create() method", () => {
 
         try {
             await Job.create(newJob);
-            // fail();
+            fail();
         } catch(err) {
             expect(err)
                 .toEqual(new BadRequestError("Company handle doesn't exist: 'nonexistent'"));
@@ -327,12 +327,8 @@ describe("Testing get() method", () => {
     test("Functions correctly with appropriate input", async () => {
 
         // Get ID of job 1 from database
-        // let jobRes = await db.query(`
-        //     SELECT id FROM jobs
-        //     WHERE title = 'job1'`
-        // );
-
         const jobId = await getJobId("job1");
+
         let job = await Job.get(jobId);
 
         expect(job).toEqual({
@@ -347,7 +343,7 @@ describe("Testing get() method", () => {
     test("Throws NotFoundError for a nonexistent job ID", async () => {
         try {
             await Job.get(0);
-            // fail();
+            fail();
         } catch(err) {
             expect(err).toEqual(new NotFoundError("Job not found: '0'"));
         }
@@ -380,16 +376,11 @@ describe("Testing update() method", () => {
     test("Throws BadRequestError when given no input data", async () => {
 
         // Get ID of job 1 from database
-        // let jobRes = await db.query(`
-        //     SELECT id FROM jobs
-        //     WHERE title = 'job1'`
-        // );
-
         const jobId = await getJobId("job1");
 
         try {
             await Job.update(jobId, {});
-            //fail();
+            fail();
         } catch (err) {
             expect(err instanceof BadRequestError).toBeTruthy();
         }
@@ -398,12 +389,8 @@ describe("Testing update() method", () => {
     test("Works correctly for partial update", async () => {
 
         // Get ID of job 1 from database
-        // let jobRes = await db.query(`
-        //     SELECT id FROM jobs
-        //     WHERE title = 'job1'`
-        // );
-
         const jobId = await getJobId("job1");
+
         const expectedData = {
             id: jobId,
             title: "job1",
@@ -429,12 +416,8 @@ describe("Testing update() method", () => {
     test("Works correctly for full update", async () => {
 
         // Get ID of job 1 from database
-        // let jobRes = await db.query(`
-        //     SELECT id FROM jobs
-        //     WHERE title = 'job1'`
-        // );
-
         const jobId = await getJobId("job1");
+
         const expectedData = {
             id: jobId,
             title: "Updated Job Title",
@@ -460,12 +443,8 @@ describe("Testing update() method", () => {
     test("Throws BadRequestError for non-allowed fields in data", async () => {
 
         // Get ID of job 1 from database
-        // let jobRes = await db.query(`
-        //     SELECT id FROM jobs
-        //     WHERE title = 'job1'`
-        // );
-
         const jobId = await getJobId("job1");
+
         const expectedData = {
             id: jobId,
             title: "job1",
@@ -476,7 +455,7 @@ describe("Testing update() method", () => {
 
         try {
             await Job.update(jobId, notAllowedData);
-            //fail();
+            fail();
         } catch(err) {
             expect(err).toEqual(new BadRequestError("Data field not allowed: 'id'"));
         }
@@ -495,7 +474,7 @@ describe("Testing update() method", () => {
     test("Throws NotFoundError for a nonexistent job ID", async () => {
         try {
             await Job.update(0, fullData);
-            //fail();
+            fail();
         } catch(err) {
             expect(err).toEqual(new NotFoundError("No job found: 0"));
         }
@@ -512,12 +491,8 @@ describe("Testing remove() method", () => {
     test("Functions correctly with appropriate input", async () => {
 
         // Get ID of job 1 from database
-        // let jobRes = await db.query(`
-        //     SELECT id FROM jobs
-        //     WHERE title = 'job1'`
-        // );
-
         const jobId = await getJobId("job1");
+
         await Job.remove(jobId);
 
         const qRes = await db.query(`
@@ -532,7 +507,7 @@ describe("Testing remove() method", () => {
     test("Throws NotFoundError for a nonexistent job ID", async () => {
         try {
             await Job.remove(0);
-            //fail();
+            fail();
         } catch(err) {
             expect(err).toEqual(new NotFoundError("No job found: 0"));
         }
