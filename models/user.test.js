@@ -33,6 +33,7 @@ afterAll(commonAfterAll);
 /************************************** authenticate */
 
 describe("authenticate", function () {
+
     test("works", async function () {
         const user = await User.authenticate("u1", "password1");
 
@@ -87,6 +88,7 @@ describe("register", function () {
 
         expect(user).toEqual(newUser);
 
+        // Test insertion in database
         const found = await db.query("SELECT * FROM users WHERE username = 'new'");
 
         expect(found.rows.length).toEqual(1);
@@ -103,6 +105,7 @@ describe("register", function () {
 
         expect(user).toEqual({ ...newUser, isAdmin: true });
 
+        // Test insertion in database
         const found = await db.query("SELECT * FROM users WHERE username = 'new'");
 
         expect(found.rows.length).toEqual(1);
@@ -208,6 +211,7 @@ describe("get", function () {
 /************************************** update */
 
 describe("update", function () {
+
     const updateData = {
         firstName: "NewF",
         lastName: "NewF",
@@ -216,20 +220,37 @@ describe("update", function () {
     };
 
     test("works", async function () {
-        let job = await User.update("u1", updateData);
+        let result = await User.update("u1", updateData);
 
-        expect(job).toEqual({
+        expect(result).toEqual({
             username: "u1",
             ...updateData,
+        });
+
+        // Test change in database
+        const found = await db.query(`
+            SELECT * FROM users
+            WHERE username = $1`,
+            ["u1"]
+        );
+
+        expect(found.rows.length).toEqual(1);
+        expect(found.rows[0]).toEqual({
+            username: "u1",
+            first_name: "NewF",
+            last_name: "NewF",
+            email: "new@email.com",
+            password: expect.any(String),
+            is_admin: true
         });
     });
 
     test("works: set password", async function () {
-        let job = await User.update("u1", {
+        let result = await User.update("u1", {
             password: "new",
         });
 
-        expect(job).toEqual({
+        expect(result).toEqual({
             username: "u1",
             firstName: "U1F",
             lastName: "U1L",
@@ -237,6 +258,7 @@ describe("update", function () {
             isAdmin: false,
         });
 
+        // Test change in database
         const found = await db.query("SELECT * FROM users WHERE username = 'u1'");
 
         expect(found.rows.length).toEqual(1);
@@ -272,6 +294,8 @@ describe("update", function () {
 describe("remove", function () {
     test("works", async function () {
         await User.remove("u1");
+
+        // Test change in database
         const res = await db.query(
             "SELECT * FROM users WHERE username='u1'");
 
