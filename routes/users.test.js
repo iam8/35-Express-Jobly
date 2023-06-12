@@ -323,6 +323,30 @@ describe("GET /users/:username", function () {
 
 describe("PATCH /users/:username", () => {
 
+    const origDataU1 = {
+        username: "u1",
+        firstName: "U1F",
+        lastName: "U1L",
+        email: "user1@user.com",
+        isAdmin: false,
+    }
+
+    const origDataU2 = {
+        username: "u2",
+        firstName: "U2F",
+        lastName: "U2L",
+        email: "user2@user.com",
+        isAdmin: true,
+    }
+
+    const expectedDataU1 = {
+        username: "u1",
+        firstName: "New",
+        lastName: "U1L",
+        email: "user1@user.com",
+        isAdmin: false,
+    }
+
     test("works for admins", async function () {
         const resp = await request(app)
             .patch(`/users/u1`)
@@ -332,13 +356,15 @@ describe("PATCH /users/:username", () => {
             .set("authorization", `Bearer ${u2Token}`);
 
         expect(resp.body).toEqual({
-            user: {
-                username: "u1",
-                firstName: "New",
-                lastName: "U1L",
-                email: "user1@user.com",
-                isAdmin: false,
-            },
+            user: expectedDataU1,
+        });
+
+        // Check that user was updated
+        const check = await User.get("u1");
+
+        expect(check).toEqual({
+            ...expectedDataU1,
+            jobs: expect.any(Array)
         });
     });
 
@@ -352,13 +378,15 @@ describe("PATCH /users/:username", () => {
 
         expect(resp.statusCode).toEqual(200);
         expect(resp.body).toEqual({
-            user: {
-                username: "u1",
-                firstName: "New",
-                lastName: "U1L",
-                email: "user1@user.com",
-                isAdmin: false,
-            }
+            user: expectedDataU1
+        });
+
+        // Check that user was updated
+        const check = await User.get("u1");
+
+        expect(check).toEqual({
+            ...expectedDataU1,
+            jobs: expect.any(Array)
         });
     })
 
@@ -377,6 +405,14 @@ describe("PATCH /users/:username", () => {
                 message: "Unauthorized"
             }
         });
+
+        // Check that user was not updated
+        const check = await User.get("u2");
+
+        expect(check).toEqual({
+            ...origDataU2,
+            jobs: expect.any(Array)
+        });
     })
 
     test("unauth for anon", async function () {
@@ -387,6 +423,14 @@ describe("PATCH /users/:username", () => {
             });
 
         expect(resp.statusCode).toEqual(401);
+
+        // Check that user was not updated
+        const check = await User.get("u1");
+
+        expect(check).toEqual({
+            ...origDataU1,
+            jobs: expect.any(Array)
+        });
     });
 
     test("not found if no such user", async function () {
@@ -409,6 +453,14 @@ describe("PATCH /users/:username", () => {
             .set("authorization", `Bearer ${u2Token}`);
 
         expect(resp.statusCode).toEqual(400);
+
+        // Check that user was not updated
+        const check = await User.get("u1");
+
+        expect(check).toEqual({
+            ...origDataU1,
+            jobs: expect.any(Array)
+        });
     });
 
     test("works: set new password", async function () {
@@ -420,13 +472,7 @@ describe("PATCH /users/:username", () => {
             .set("authorization", `Bearer ${u2Token}`);
 
         expect(resp.body).toEqual({
-            user: {
-                username: "u1",
-                firstName: "U1F",
-                lastName: "U1L",
-                email: "user1@user.com",
-                isAdmin: false,
-            },
+            user: origDataU1,
         });
 
         const isSuccessful = await User.authenticate("u1", "new-password");
