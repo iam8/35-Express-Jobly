@@ -12,6 +12,7 @@ const request = require("supertest");
 const db = require("../db.js");
 const app = require("../app");
 const User = require("../models/user");
+const { NotFoundError } = require("../expressError");
 
 const {
     getJobId,
@@ -36,84 +37,91 @@ const adminAuth = `Bearer ${u2Token}`;
 
 describe("POST /users", function () {
 
+    const newDataNoAdmin = {
+        username: "u-new",
+        firstName: "First-new",
+        lastName: "Last-new",
+        password: "password-new",
+        email: "new@email.com",
+        isAdmin: false
+    };
+
+    const expectedDataNoAdmin = {...newDataNoAdmin};
+    delete expectedDataNoAdmin.password;
+
     test("works for admins: create non-admin", async function () {
         const resp = await request(app)
             .post("/users")
-            .send({
-                username: "u-new",
-                firstName: "First-new",
-                lastName: "Last-newL",
-                password: "password-new",
-                email: "new@email.com",
-                isAdmin: false,
-            })
+            .send(newDataNoAdmin)
             .set("authorization", `Bearer ${u2Token}`);
 
         expect(resp.statusCode).toEqual(201);
         expect(resp.body).toEqual({
-            user: {
-                username: "u-new",
-                firstName: "First-new",
-                lastName: "Last-newL",
-                email: "new@email.com",
-                isAdmin: false,
-            },
+            user: expectedDataNoAdmin,
             token: expect.any(String),
         });
+
+        // Check that user was created
+        const check = await User.get(expectedDataNoAdmin.username);
+
+        expect(check).toEqual({
+            ...expectedDataNoAdmin,
+            jobs: []
+        });
+
     });
 
     test("works for admins: create admin", async function () {
         const resp = await request(app)
             .post("/users")
             .send({
-                username: "u-new",
-                firstName: "First-new",
-                lastName: "Last-newL",
-                password: "password-new",
-                email: "new@email.com",
-                isAdmin: true,
+                ...newDataNoAdmin,
+                isAdmin: true
             })
             .set("authorization", `Bearer ${u2Token}`);
 
         expect(resp.statusCode).toEqual(201);
         expect(resp.body).toEqual({
             user: {
-                username: "u-new",
-                firstName: "First-new",
-                lastName: "Last-newL",
-                email: "new@email.com",
-                isAdmin: true,
+                ...expectedDataNoAdmin,
+                isAdmin: true
             },
             token: expect.any(String),
+        });
+
+        // Check that user was created
+        const check = await User.get(expectedDataNoAdmin.username);
+
+        expect(check).toEqual({
+            ...expectedDataNoAdmin,
+            isAdmin: true,
+            jobs: []
         });
     });
 
     test("unauth for anon", async function () {
+        expect.assertions(2);
+
         const resp = await request(app)
             .post("/users")
-            .send({
-                username: "u-new",
-                firstName: "First-new",
-                lastName: "Last-newL",
-                password: "password-new",
-                email: "new@email.com",
-                isAdmin: true,
-            });
+            .send(newDataNoAdmin);
 
         expect(resp.statusCode).toEqual(401);
+
+        // Check that user was not created
+        try {
+            await User.get(newDataNoAdmin.username);
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError(`No user: ${newDataNoAdmin.username}`));
+        }
     });
 
     test("Returns unauthorized error (status 401) for logged-in non-admin users", async () => {
+        expect.assertions(3);
+
         const resp = await request(app)
             .post("/users")
-            .send({
-                username: "u-new",
-                firstName: "First-new",
-                lastName: "Last-newL",
-                password: "password-new",
-                email: "new@email.com",
-                isAdmin: true,
-            })
+            .send(newDataNoAdmin)
             .set("authorization", `Bearer ${u1Token}`);
 
         expect(resp.statusCode).toEqual(401);
@@ -123,9 +131,18 @@ describe("POST /users", function () {
                 message: "Unauthorized"
             }
         });
+
+        // Check that user was not created
+        try {
+            await User.get(newDataNoAdmin.username);
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError(`No user: ${newDataNoAdmin.username}`));
+        }
     })
 
     test("bad request if missing data", async function () {
+        expect.assertions(2);
+
         const resp = await request(app)
             .post("/users")
             .send({
@@ -134,22 +151,35 @@ describe("POST /users", function () {
             .set("authorization", `Bearer ${u2Token}`);
 
         expect(resp.statusCode).toEqual(400);
+
+        // Check that user was not created
+        try {
+            await User.get(newDataNoAdmin.username);
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError(`No user: ${newDataNoAdmin.username}`));
+        }
     });
 
     test("bad request if invalid data", async function () {
+        expect.assertions(2);
+
         const resp = await request(app)
             .post("/users")
             .send({
-                username: "u-new",
-                firstName: "First-new",
-                lastName: "Last-newL",
-                password: "password-new",
-                email: "not-an-email",
+                ...newDataNoAdmin,
                 isAdmin: true,
+                email: "not-an-email"
             })
             .set("authorization", `Bearer ${u2Token}`);
 
         expect(resp.statusCode).toEqual(400);
+
+        // Check that user was not created
+        try {
+            await User.get(newDataNoAdmin.username);
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError(`No user: ${newDataNoAdmin.username}`));
+        }
     });
 });
 
