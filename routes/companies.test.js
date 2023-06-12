@@ -1,3 +1,8 @@
+// Ioana A Mititean
+// Unit 35 - Jobly
+
+/** Tests for Company routes. */
+
 "use strict";
 
 const request = require("supertest");
@@ -7,12 +12,13 @@ const app = require("../app");
 const { BadRequestError } = require("../expressError");
 
 const {
-  commonBeforeAll,
-  commonBeforeEach,
-  commonAfterEach,
-  commonAfterAll,
-  u1Token,
-  u2Token
+    getJobId,
+    commonBeforeAll,
+    commonBeforeEach,
+    commonAfterEach,
+    commonAfterAll,
+    u1Token,
+    u2Token
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -20,9 +26,11 @@ beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
 
+
 /************************************** POST /companies */
 
 describe("POST /companies", function () {
+
     const newCompany = {
         handle: "new",
         name: "New",
@@ -81,9 +89,11 @@ describe("POST /companies", function () {
     });
 });
 
+
 /************************************** GET /companies */
 
 describe("GET /companies", function () {
+
     test("ok for anon", async function () {
         const resp = await request(app).get("/companies");
 
@@ -175,61 +185,67 @@ describe("GET /companies", function () {
     });
 });
 
+
 /************************************** GET /companies/:handle */
 
 describe("GET /companies/:handle", function () {
-  test("works for anon", async function () {
-    const resp = await request(app).get(`/companies/c1`);
-    expect(resp.body).toEqual({
-      company: {
-        handle: "c1",
-        name: "C1",
-        description: "Desc1",
-        numEmployees: 1,
-        logoUrl: "http://c1.img",
-        jobs: [
-            {
-                id: expect.any(Number),
-                title: "job1",
-                salary: 100,
-                equity: "0.1",
-                companyHandle: "c1"
+
+    test("works for anon", async function () {
+        const resp = await request(app).get(`/companies/c1`);
+
+        expect(resp.body).toEqual({
+        company: {
+            handle: "c1",
+            name: "C1",
+            description: "Desc1",
+            numEmployees: 1,
+            logoUrl: "http://c1.img",
+            jobs: [
+                {
+                    id: expect.any(Number),
+                    title: "job1",
+                    salary: 100,
+                    equity: "0.1",
+                    companyHandle: "c1"
+                },
+                {
+                    id: expect.any(Number),
+                    title: "job4",
+                    salary: 400,
+                    equity: "0.4",
+                    companyHandle: "c1"
+                }
+            ]
+        },
+        });
+    });
+
+    test("works for anon: company w/o jobs", async function () {
+        const resp = await request(app).get(`/companies/c2`);
+
+        expect(resp.body).toEqual({
+            company: {
+                handle: "c2",
+                name: "C2",
+                description: "Desc2",
+                numEmployees: 2,
+                logoUrl: "http://c2.img",
+                jobs: []
             },
-            {
-                id: expect.any(Number),
-                title: "job4",
-                salary: 400,
-                equity: "0.4",
-                companyHandle: "c1"
-            }
-        ]
-      },
+        });
     });
-  });
 
-  test("works for anon: company w/o jobs", async function () {
-    const resp = await request(app).get(`/companies/c2`);
-    expect(resp.body).toEqual({
-      company: {
-        handle: "c2",
-        name: "C2",
-        description: "Desc2",
-        numEmployees: 2,
-        logoUrl: "http://c2.img",
-        jobs: []
-      },
+    test("not found or no such company", async function () {
+        const resp = await request(app).get(`/companies/nope`);
+        expect(resp.statusCode).toEqual(404);
     });
-  });
-
-  test("not found for no such company", async function () {
-    const resp = await request(app).get(`/companies/nope`);
-    expect(resp.statusCode).toEqual(404);
-  });
 });
+
 
 /************************************** PATCH /companies/:handle */
 
 describe("PATCH /companies/:handle", function () {
+
     test("works for admins", async function () {
         const resp = await request(app)
             .patch(`/companies/c1`)
@@ -275,7 +291,7 @@ describe("PATCH /companies/:handle", function () {
         expect(resp.statusCode).toEqual(401);
     });
 
-    test("not found on no such company", async function () {
+    test("not found or no such company", async function () {
         const resp = await request(app)
             .patch(`/companies/nope`)
             .send({
@@ -309,6 +325,7 @@ describe("PATCH /companies/:handle", function () {
 /************************************** DELETE /companies/:handle */
 
 describe("DELETE /companies/:handle", function () {
+
     test("works for admins", async function () {
         const resp = await request(app)
             .delete(`/companies/c1`)
