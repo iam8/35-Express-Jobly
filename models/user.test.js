@@ -325,7 +325,6 @@ describe("Applying for a job", () => {
 
         const application = await User.applyForJob("u1", jobId);
 
-        // Check return value
         expect(application).toEqual({
             username: "u1",
             jobId
@@ -339,6 +338,18 @@ describe("Applying for a job", () => {
         );
 
         expect(appRes.rows.length).toEqual(1);
+    })
+
+    test("Returns error (status 400) for duplicate application", async () => {
+        expect.assertions(1);
+
+        const jobId = await getJobId("job1");
+
+        try {
+            await User.applyForJob("u1", jobId);
+        } catch(err) {
+            expect(err).toEqual(new BadRequestError(`Duplicate application: job ID ${jobId}`));
+        }
     })
 
     test("Returns error (status 404) for a nonexistent username", async () => {
