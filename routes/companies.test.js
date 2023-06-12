@@ -283,7 +283,25 @@ describe("GET /companies/:handle", function () {
 
 describe("PATCH /companies/:handle", function () {
 
+    const originalC1 = {
+        handle: "c1",
+        name: "C1",
+        description: "Desc1",
+        numEmployees: 1,
+        logoUrl: "http://c1.img",
+        jobs: expect.any(Array)
+    }
+
     test("works for admins", async function () {
+
+        const expectedData = {
+            handle: "c1",
+            name: "C1-new",
+            description: "Desc1",
+            numEmployees: 1,
+            logoUrl: "http://c1.img",
+        };
+
         const resp = await request(app)
             .patch(`/companies/c1`)
             .send({
@@ -292,13 +310,15 @@ describe("PATCH /companies/:handle", function () {
             .set("authorization", `Bearer ${u2Token}`);
 
         expect(resp.body).toEqual({
-            company: {
-                handle: "c1",
-                name: "C1-new",
-                description: "Desc1",
-                numEmployees: 1,
-                logoUrl: "http://c1.img",
-            },
+            company: expectedData
+        });
+
+        // Check that company was updated
+        const check = await Company.get("c1");
+
+        expect(check).toEqual({
+            ...expectedData,
+            jobs: expect.any(Array)
         });
     });
 
@@ -317,6 +337,11 @@ describe("PATCH /companies/:handle", function () {
                 message: "Unauthorized"
             }
         });
+
+        // Check that company was not updated
+        const check = await Company.get("c1");
+
+        expect(check).toEqual(originalC1);
     })
 
     test("unauth for anon", async function () {
@@ -325,7 +350,13 @@ describe("PATCH /companies/:handle", function () {
             .send({
                 name: "C1-new",
             });
+
         expect(resp.statusCode).toEqual(401);
+
+        // Check that company was not updated
+        const check = await Company.get("c1");
+
+        expect(check).toEqual(originalC1);
     });
 
     test("not found or no such company", async function () {
@@ -335,6 +366,7 @@ describe("PATCH /companies/:handle", function () {
                 name: "new nope",
             })
             .set("authorization", `Bearer ${u2Token}`);
+
         expect(resp.statusCode).toEqual(404);
     });
 
@@ -345,7 +377,13 @@ describe("PATCH /companies/:handle", function () {
                 handle: "c1-new",
             })
             .set("authorization", `Bearer ${u2Token}`);
+
         expect(resp.statusCode).toEqual(400);
+
+        // Check that company was not updated
+        const check = await Company.get("c1");
+
+        expect(check).toEqual(originalC1);
     });
 
     test("bad request on invalid data", async function () {
@@ -355,7 +393,13 @@ describe("PATCH /companies/:handle", function () {
                 logoUrl: "not-a-url",
             })
             .set("authorization", `Bearer ${u2Token}`);
+
         expect(resp.statusCode).toEqual(400);
+
+        // Check that company was not updated
+        const check = await Company.get("c1");
+
+        expect(check).toEqual(originalC1);
     });
 });
 
@@ -364,10 +408,20 @@ describe("PATCH /companies/:handle", function () {
 describe("DELETE /companies/:handle", function () {
 
     test("works for admins", async function () {
+        expect.assertions(2);
+
         const resp = await request(app)
             .delete(`/companies/c1`)
             .set("authorization", `Bearer ${u2Token}`);
+
         expect(resp.body).toEqual({ deleted: "c1" });
+
+        // Check that company was deleted
+        try {
+            await Company.get("c1");
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError("No company: c1"));
+        }
     });
 
     test("Returns unauthorized error (status 400) for logged-in non-admin users", async () => {
@@ -382,18 +436,30 @@ describe("DELETE /companies/:handle", function () {
                 message: "Unauthorized"
             }
         });
+
+        // Check that company was not deleted
+        const check = await Company.get("c1");
+
+        expect(check.handle).toEqual("c1");
     })
 
     test("unauth for anon", async function () {
         const resp = await request(app)
             .delete(`/companies/c1`);
+
         expect(resp.statusCode).toEqual(401);
+
+        // Check that company was not deleted
+        const check = await Company.get("c1");
+
+        expect(check.handle).toEqual("c1");
     });
 
     test("not found for no such company", async function () {
         const resp = await request(app)
             .delete(`/companies/nope`)
             .set("authorization", `Bearer ${u2Token}`);
+
         expect(resp.statusCode).toEqual(404);
     });
 });
