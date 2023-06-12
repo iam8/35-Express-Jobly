@@ -1,3 +1,10 @@
+// Ioana A Mititean
+// Unit 35 - Express Jobly
+
+/**
+ * Tests for job routes.
+ */
+
 "use strict";
 
 const request = require("supertest");
@@ -7,12 +14,13 @@ const app = require("../app");
 const User = require("../models/user");
 
 const {
-  commonBeforeAll,
-  commonBeforeEach,
-  commonAfterEach,
-  commonAfterAll,
-  u1Token,
-  u2Token
+    getJobId,
+    commonBeforeAll,
+    commonBeforeEach,
+    commonAfterEach,
+    commonAfterAll,
+    u1Token,
+    u2Token
 } = require("./_testCommon");
 
 beforeAll(commonBeforeAll);
@@ -24,29 +32,10 @@ const basicAuth = `Bearer ${u1Token}`;
 const adminAuth = `Bearer ${u2Token}`;
 
 
-// HELPERS FOR TESTS ------------------------------------------------------------------------------
-
-/**
- * Get the ID of the job with the given title from the database.
- *
- * Returns: job ID (integer)
- */
-async function getId(jobTitle) {
-    const idRes = await db.query(`
-        SELECT id FROM jobs
-        WHERE title = $1`,
-        [jobTitle]
-    );
-
-    return idRes.rows[0].id;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-
 /************************************** POST /users */
 
 describe("POST /users", function () {
+
     test("works for admins: create non-admin", async function () {
         const resp = await request(app)
             .post("/users")
@@ -59,15 +48,17 @@ describe("POST /users", function () {
                 isAdmin: false,
             })
             .set("authorization", `Bearer ${u2Token}`);
+
         expect(resp.statusCode).toEqual(201);
         expect(resp.body).toEqual({
-        user: {
-            username: "u-new",
-            firstName: "First-new",
-            lastName: "Last-newL",
-            email: "new@email.com",
-            isAdmin: false,
-        }, token: expect.any(String),
+            user: {
+                username: "u-new",
+                firstName: "First-new",
+                lastName: "Last-newL",
+                email: "new@email.com",
+                isAdmin: false,
+            },
+            token: expect.any(String),
         });
     });
 
@@ -83,15 +74,17 @@ describe("POST /users", function () {
                 isAdmin: true,
             })
             .set("authorization", `Bearer ${u2Token}`);
+
         expect(resp.statusCode).toEqual(201);
         expect(resp.body).toEqual({
-        user: {
-            username: "u-new",
-            firstName: "First-new",
-            lastName: "Last-newL",
-            email: "new@email.com",
-            isAdmin: true,
-        }, token: expect.any(String),
+            user: {
+                username: "u-new",
+                firstName: "First-new",
+                lastName: "Last-newL",
+                email: "new@email.com",
+                isAdmin: true,
+            },
+            token: expect.any(String),
         });
     });
 
@@ -106,6 +99,7 @@ describe("POST /users", function () {
                 email: "new@email.com",
                 isAdmin: true,
             });
+
         expect(resp.statusCode).toEqual(401);
     });
 
@@ -138,6 +132,7 @@ describe("POST /users", function () {
                 username: "u-new",
             })
             .set("authorization", `Bearer ${u2Token}`);
+
         expect(resp.statusCode).toEqual(400);
     });
 
@@ -153,13 +148,16 @@ describe("POST /users", function () {
                 isAdmin: true,
             })
             .set("authorization", `Bearer ${u2Token}`);
+
         expect(resp.statusCode).toEqual(400);
     });
 });
 
+
 /************************************** GET /users */
 
 describe("GET /users", function () {
+
     test("works for admins", async function () {
 
         const resp = await request(app)
@@ -196,6 +194,7 @@ describe("GET /users", function () {
     test("unauth for anon", async function () {
         const resp = await request(app)
             .get("/users");
+
         expect(resp.statusCode).toEqual(401);
     });
 
@@ -212,18 +211,8 @@ describe("GET /users", function () {
             }
         });
     })
-
-    // test("fails: test next() handler", async function () {
-    //     // there's no normal failure event which will cause this route to fail ---
-    //     // thus making it hard to test that the error-handler works with it. This
-    //     // should cause an error, all right :)
-    //     await db.query("DROP TABLE users CASCADE");
-    //     const resp = await request(app)
-    //         .get("/users")
-    //         .set("authorization", `Bearer badToken`);
-    //     expect(resp.statusCode).toEqual(500);
-    // });
 });
+
 
 /************************************** GET /users/:username */
 
@@ -232,6 +221,7 @@ describe("GET /users/:username", function () {
         const resp = await request(app)
             .get(`/users/u1`)
             .set("authorization", `Bearer ${u2Token}`);
+
         expect(resp.body).toEqual({
             user: {
                 username: "u1",
@@ -285,6 +275,7 @@ describe("GET /users/:username", function () {
     test("unauth for anon", async function () {
         const resp = await request(app)
             .get(`/users/u1`);
+
         expect(resp.statusCode).toEqual(401);
     });
 
@@ -297,9 +288,11 @@ describe("GET /users/:username", function () {
     });
 });
 
+
 /************************************** PATCH /users/:username */
 
 describe("PATCH /users/:username", () => {
+
     test("works for admins", async function () {
         const resp = await request(app)
             .patch(`/users/u1`)
@@ -411,6 +404,7 @@ describe("PATCH /users/:username", () => {
     });
 });
 
+
 /************************************** DELETE /users/:username */
 
 describe("DELETE /users/:username", function () {
@@ -468,7 +462,7 @@ describe("POST /users/:username/jobs/:id", () => {
     test("Works for admins", async () => {
 
         // Grab ID of job1 from database
-        const jobId = await getId("job3");
+        const jobId = await getJobId("job3");
 
         const resp = await request(app)
             .post(`/users/u1/jobs/${jobId}`)
@@ -483,7 +477,7 @@ describe("POST /users/:username/jobs/:id", () => {
     test("Works for logged-in, corresponding, non-admin user", async () => {
 
         // Grab ID of job3 from database
-        const jobId = await getId("job3");
+        const jobId = await getJobId("job3");
 
         const resp = await request(app)
             .post(`/users/u1/jobs/${jobId}`)
@@ -498,7 +492,7 @@ describe("POST /users/:username/jobs/:id", () => {
     test("Returns error with status code 401 for a logged-out user", async () => {
 
         // Grab ID of job1 from database
-        const jobId = await getId("job3");
+        const jobId = await getJobId("job3");
 
         const resp = await request(app)
             .post(`/users/u1/jobs/${jobId}`);
@@ -516,7 +510,7 @@ describe("POST /users/:username/jobs/:id", () => {
     async () => {
 
         // Grab ID of job1 from database
-        const jobId = await getId("job1");
+        const jobId = await getJobId("job1");
 
         const resp = await request(app)
             .post(`/users/u2/jobs/${jobId}`)
@@ -534,7 +528,7 @@ describe("POST /users/:username/jobs/:id", () => {
     test("Returns error with status code 404 for a nonexistent username", async () => {
 
         // Grab ID of job1 from database
-        const jobId = await getId("job1");
+        const jobId = await getJobId("job1");
 
         const resp = await request(app)
             .post(`/users/nonexistent/jobs/${jobId}`)
