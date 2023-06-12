@@ -578,6 +578,8 @@ describe("POST /users/:username/jobs/:id", () => {
         expect(resp.body).toEqual({
             applied: jobId
         });
+
+        // TODO: Check that application was created
     })
 
     test("Works for logged-in, corresponding, non-admin user", async () => {
@@ -593,6 +595,8 @@ describe("POST /users/:username/jobs/:id", () => {
         expect(resp.body).toEqual({
             applied: jobId
         });
+
+        // TODO: Check that application was created
     })
 
     test("Returns error with status code 401 for a logged-out user", async () => {
@@ -610,6 +614,8 @@ describe("POST /users/:username/jobs/:id", () => {
                 message: "Unauthorized"
             }
         });
+
+        // TODO: Check that application was not created
     })
 
     test("Returns error with status code 401 for a non-admin, non-corresponding user",
@@ -629,6 +635,9 @@ describe("POST /users/:username/jobs/:id", () => {
                 message: "Unauthorized"
             }
         });
+
+        // TODO: Check that application was not created
+
     })
 
     test("Returns error with status code 404 for a nonexistent username", async () => {
@@ -647,6 +656,9 @@ describe("POST /users/:username/jobs/:id", () => {
                 message: "No user found: 'nonexistent'"
             }
         });
+
+        // TODO: Check that application was not created
+
     })
 
     test("Returns error with status code 404 for a nonexistent job ID", async () => {
@@ -662,6 +674,9 @@ describe("POST /users/:username/jobs/:id", () => {
                 message: "No job found: '0'"
             }
         });
+
+        // TODO: Check that application was not created
+
     })
 })
 
