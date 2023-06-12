@@ -494,7 +494,7 @@ describe("DELETE /users/:username", function () {
 
         expect(resp.body).toEqual({ deleted: "u1" });
 
-        // TODO: Check that user is deleted
+        // Check that user is deleted
         try {
             await User.get("u1");
         } catch(err) {
@@ -511,7 +511,7 @@ describe("DELETE /users/:username", function () {
 
         expect(resp.body).toEqual({ deleted: "u1" });
 
-        // TODO: Check that user is deleted
+        // Check that user is deleted
         try {
             await User.get("u1");
         } catch(err) {
@@ -532,7 +532,7 @@ describe("DELETE /users/:username", function () {
             }
         });
 
-        // TODO: Check that user is not deleted
+        // Check that user is not deleted
         const check = await User.get("u2");
 
         expect(check.username).toEqual("u2");
@@ -544,7 +544,7 @@ describe("DELETE /users/:username", function () {
 
         expect(resp.statusCode).toEqual(401);
 
-        // TODO: Check that user is not deleted
+        // Check that user is not deleted
         const check = await User.get("u1");
 
         expect(check.username).toEqual("u1");
