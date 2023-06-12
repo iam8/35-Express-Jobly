@@ -5,7 +5,6 @@
  * Routes for jobs.
  */
 
-
 "use strict";
 
 const jsonschema = require("jsonschema");
