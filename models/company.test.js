@@ -41,6 +41,7 @@ describe("create", function () {
 
         expect(company).toEqual(newCompany);
 
+        // Test change in database
         const result = await db.query(
             `SELECT handle, name, description, num_employees, logo_url
             FROM companies
@@ -245,6 +246,7 @@ describe("update", function () {
             ...updateData,
         });
 
+        // Test change in database
         const result = await db.query(
             `SELECT handle, name, description, num_employees, logo_url
             FROM companies
@@ -274,6 +276,7 @@ describe("update", function () {
             ...updateDataSetNulls,
         });
 
+        // Test change in database
         const result = await db.query(
             `SELECT handle, name, description, num_employees, logo_url
             FROM companies
@@ -316,8 +319,11 @@ describe("remove", function () {
 
     test("works", async function () {
         await Company.remove("c1");
+
+        // Test change in database
         const res = await db.query(
             "SELECT handle FROM companies WHERE handle='c1'");
+
         expect(res.rows.length).toEqual(0);
     });
 
