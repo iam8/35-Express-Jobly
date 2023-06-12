@@ -353,7 +353,7 @@ describe("Applying for a job", () => {
     })
 
     test("Returns error (status 404) for a nonexistent username", async () => {
-        expect.assertions(1);
+        expect.assertions(2);
 
         // Grab ID of job1 from database
         const jobId = await getJobId("job5");
@@ -363,16 +363,34 @@ describe("Applying for a job", () => {
         } catch(err) {
             expect(err).toEqual(new NotFoundError("No user found: 'nonexistent'"));
         }
+
+        // Check that application was not created
+        const appRes = await db.query(`
+            SELECT username, job_id FROM applications
+            WHERE username = $1 AND job_id = $2`,
+            ["nonexistent", jobId]
+        );
+
+        expect(appRes.rows.length).toEqual(0);
     })
 
     test("Returns error (status 404) for a nonexistent job ID", async () => {
-        expect.assertions(1);
+        expect.assertions(2);
 
         try {
             await User.applyForJob("u1", 0);
         } catch(err) {
             expect(err).toEqual(new NotFoundError("No job found: '0'"));
         }
+
+        // Check that application was not created
+        const appRes = await db.query(`
+            SELECT username, job_id FROM applications
+            WHERE username = $1 AND job_id = $2`,
+            ["nonexistent", 0]
+        );
+
+        expect(appRes.rows.length).toEqual(0);
     })
 })
 
