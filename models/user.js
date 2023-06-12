@@ -123,7 +123,7 @@ class User {
 
     /** Given a username, return data about user.
      *
-     * Returns { username, first_name, last_name, is_admin, jobs }
+     * Returns { username, firstName, lastName, email, isAdmin, jobs }
      *   where jobs is [ jobId1, jobId2, ...]
      *
      * Throws NotFoundError if user not found.
