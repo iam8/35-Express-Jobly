@@ -297,7 +297,7 @@ describe("Applying for a job", () => {
     test("Works for appropriate inputs", async () => {
 
         // Grab ID of job5 from database
-        const jobId = await getId("job5");
+        const jobId = await getJobId("job5");
 
         const application = await User.applyForJob("u1", jobId);
 
@@ -321,7 +321,7 @@ describe("Applying for a job", () => {
         expect.assertions(1);
 
         // Grab ID of job1 from database
-        const jobId = await getId("job5");
+        const jobId = await getJobId("job5");
 
         try {
             await User.applyForJob("nonexistent", jobId);
