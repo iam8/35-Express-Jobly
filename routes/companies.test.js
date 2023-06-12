@@ -9,6 +9,8 @@ const request = require("supertest");
 
 const db = require("../db");
 const app = require("../app");
+const Company = require("../models/company");
+const { NotFoundError } = require("../expressError");
 
 const {
     commonBeforeAll,
@@ -47,9 +49,19 @@ describe("POST /companies", function () {
         expect(resp.body).toEqual({
             company: newCompany,
         });
+
+        // Test that company was created
+        const check = await Company.get("new");
+
+        expect(check).toEqual({
+            ...newCompany,
+            jobs: []
+        });
     });
 
     test("Returns unauthorized error (status 401) for logged-in non-admin users", async () => {
+        expect.assertions(3);
+
         const resp = await request(app)
             .post("/companies")
             .send(newCompany)
@@ -62,9 +74,18 @@ describe("POST /companies", function () {
                 message: "Unauthorized"
             }
         });
+
+        // Test that company was not created
+        try {
+            await Company.get("new");
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError("No company: new"));
+        }
     })
 
     test("bad request with missing data", async function () {
+        expect.assertions(2);
+
         const resp = await request(app)
             .post("/companies")
             .send({
@@ -72,10 +93,20 @@ describe("POST /companies", function () {
                 numEmployees: 10,
             })
             .set("authorization", `Bearer ${u2Token}`);
+
         expect(resp.statusCode).toEqual(400);
+
+        // Test that company was not created
+        try {
+            await Company.get("new");
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError("No company: new"));
+        }
     });
 
     test("bad request with invalid data", async function () {
+        expect.assertions(2);
+
         const resp = await request(app)
             .post("/companies")
             .send({
@@ -83,7 +114,15 @@ describe("POST /companies", function () {
                 logoUrl: "not-a-url",
             })
             .set("authorization", `Bearer ${u2Token}`);
+
         expect(resp.statusCode).toEqual(400);
+
+        // Test that company was not created
+        try {
+            await Company.get("new");
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError("No company: new"));
+        }
     });
 });
 
