@@ -595,6 +595,7 @@ describe("PATCH /jobs/:id", () => {
 describe("DELETE /jobs/:id", () => {
 
     test("Works for admins", async () => {
+        expect.assertions(3);
 
         // Grab ID of job1 from database
         const id = await getJobId("job1");
@@ -608,7 +609,12 @@ describe("DELETE /jobs/:id", () => {
             deleted: `${id}`
         });
 
-        // TODO: Check that job was deleted
+        // Check that job was deleted
+        try {
+            await Job.get(id);
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError(`Job not found: '${id}'`));
+        }
     })
 
     test("Returns error with status 401 for a user that isn't logged in", async () => {
@@ -627,7 +633,10 @@ describe("DELETE /jobs/:id", () => {
             }
         });
 
-        // TODO: Check that job was not deleted
+        // Check that job was not deleted
+        const check = await Job.get(id);
+
+        expect(check.title).toEqual("job1");
     })
 
     test("Returns error with status 401 for a logged-in, non-admin user", async () => {
@@ -647,7 +656,10 @@ describe("DELETE /jobs/:id", () => {
             }
         });
 
-        // TODO: Check that job was not deleted
+        // Check that job was not deleted
+        const check = await Job.get(id);
+
+        expect(check.title).toEqual("job1");
     })
 
     test("Returns error with status 404 if job not found", async () => {
