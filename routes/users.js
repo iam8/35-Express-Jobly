@@ -1,13 +1,16 @@
-"use strict";
+// Ioana A Mititean
+// Unit 35 - Express Jobly
 
 /** Routes for users. */
 
-const jsonschema = require("jsonschema");
+"use strict";
 
 const express = require("express");
-const { ensureLoggedIn, ensureAdmin, ensureAdminOrSpecificUser} = require("../middleware/auth");
+
+const jsonschema = require("jsonschema");
+
+const { ensureAdmin, ensureAdminOrSpecificUser} = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
-const { UnauthorizedError } = require("../expressError");
 const User = require("../models/user");
 const { createToken } = require("../helpers/tokens");
 const userNewSchema = require("../schemas/userNew.json");
@@ -27,21 +30,20 @@ const router = express.Router();
  *
  * Authorization required: login, admin
  **/
-
 router.post("/", ensureAdmin, async function (req, res, next) {
-  try {
-    const validator = jsonschema.validate(req.body, userNewSchema);
-    if (!validator.valid) {
-      const errs = validator.errors.map(e => e.stack);
-      throw new BadRequestError(errs);
-    }
+    try {
+        const validator = jsonschema.validate(req.body, userNewSchema);
+        if (!validator.valid) {
+            const errs = validator.errors.map(e => e.stack);
+            throw new BadRequestError(errs);
+        }
 
-    const user = await User.register(req.body);
-    const token = createToken(user);
-    return res.status(201).json({ user, token });
-  } catch (err) {
-    return next(err);
-  }
+        const user = await User.register(req.body);
+        const token = createToken(user);
+        return res.status(201).json({ user, token });
+    } catch (err) {
+        return next(err);
+    }
 });
 
 
@@ -51,14 +53,13 @@ router.post("/", ensureAdmin, async function (req, res, next) {
  *
  * Authorization required: login, admin
  **/
-
 router.get("/", ensureAdmin, async function (req, res, next) {
-  try {
-    const users = await User.findAll();
-    return res.json({ users });
-  } catch (err) {
-    return next(err);
-  }
+    try {
+        const users = await User.findAll();
+        return res.json({ users });
+    } catch (err) {
+        return next(err);
+    }
 });
 
 
@@ -71,7 +72,6 @@ router.get("/", ensureAdmin, async function (req, res, next) {
  *
  * TODO: add logic to show the jobIds for user's applied jobs in return value
  **/
-
 router.get("/:username", ensureAdminOrSpecificUser, async function (req, res, next) {
     try {
         const user = await User.get(req.params.username);
@@ -91,20 +91,19 @@ router.get("/:username", ensureAdminOrSpecificUser, async function (req, res, ne
  *
  * Authorization required: login, admin or corresponding user
  **/
-
 router.patch("/:username", ensureAdminOrSpecificUser, async function (req, res, next) {
-  try {
-    const validator = jsonschema.validate(req.body, userUpdateSchema);
-    if (!validator.valid) {
-      const errs = validator.errors.map(e => e.stack);
-      throw new BadRequestError(errs);
-    }
+    try {
+        const validator = jsonschema.validate(req.body, userUpdateSchema);
+        if (!validator.valid) {
+            const errs = validator.errors.map(e => e.stack);
+            throw new BadRequestError(errs);
+        }
 
-    const user = await User.update(req.params.username, req.body);
-    return res.json({ user });
-  } catch (err) {
-    return next(err);
-  }
+        const user = await User.update(req.params.username, req.body);
+        return res.json({ user });
+    } catch (err) {
+        return next(err);
+    }
 });
 
 
@@ -112,14 +111,13 @@ router.patch("/:username", ensureAdminOrSpecificUser, async function (req, res, 
  *
  * Authorization required: login, admin or corresponding user
  **/
-
 router.delete("/:username", ensureAdminOrSpecificUser, async function (req, res, next) {
-  try {
-    await User.remove(req.params.username);
-    return res.json({ deleted: req.params.username });
-  } catch (err) {
-    return next(err);
-  }
+    try {
+        await User.remove(req.params.username);
+        return res.json({ deleted: req.params.username });
+    } catch (err) {
+        return next(err);
+    }
 });
 
 
@@ -148,7 +146,6 @@ router.post("/:username/jobs/:id", ensureAdminOrSpecificUser, async (req, res, n
         return next(err);
     }
 })
-
 
 
 module.exports = router;
