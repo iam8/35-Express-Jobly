@@ -14,6 +14,7 @@ const app = require("../app");
 const { BadRequestError } = require("../expressError");
 
 const {
+    getJobId,
     commonBeforeAll,
     commonBeforeEach,
     commonAfterEach,
@@ -29,26 +30,6 @@ afterAll(commonAfterAll);
 
 const basicAuth = `Bearer ${u1Token}`;
 const adminAuth = `Bearer ${u2Token}`;
-
-
-// HELPERS FOR TESTS ------------------------------------------------------------------------------
-
-/**
- * Get the ID of the job with the given title from the database.
- *
- * Returns: job ID (integer)
- */
-async function getId(jobTitle) {
-    const idRes = await db.query(`
-        SELECT id FROM jobs
-        WHERE title = $1`,
-        [jobTitle]
-    );
-
-    return idRes.rows[0].id;
-}
-
-//-------------------------------------------------------------------------------------------------
 
 
 // POST /jobs -------------------------------------------------------------------------------------
@@ -271,7 +252,7 @@ describe("GET /jobs/:id", () => {
     test("Works for a user that isn't logged in", async () => {
 
         // Grab ID of job1 from database
-        const id = await getId("job1");
+        const id = await getJobId("job1");
 
         const resp = await request(app)
             .get(`/jobs/${id}`);
@@ -283,7 +264,7 @@ describe("GET /jobs/:id", () => {
     test("Works for a logged-in, non-admin user", async () => {
 
         // Grab ID of job1 from database
-        const id = await getId("job1");
+        const id = await getJobId("job1");
 
         const resp = await request(app)
             .get(`/jobs/${id}`)
@@ -296,7 +277,7 @@ describe("GET /jobs/:id", () => {
     test("Works for admins", async () => {
 
         // Grab ID of job1 from database
-        const id = await getId("job1");
+        const id = await getJobId("job1");
 
         const resp = await request(app)
             .get(`/jobs/${id}`)
@@ -341,7 +322,7 @@ describe("PATCH /jobs/:id", () => {
     test("Works for admins - full update", async () => {
 
         // Grab ID of job1 from database
-        const id = await getId("job1");
+        const id = await getJobId("job1");
 
         const resp = await request(app)
             .patch(`/jobs/${id}`)
@@ -363,7 +344,7 @@ describe("PATCH /jobs/:id", () => {
     test("Works for admins - partial update", async () => {
 
         // Grab ID of job1 from database
-        const id = await getId("job1");
+        const id = await getJobId("job1");
 
         const resp = await request(app)
             .patch(`/jobs/${id}`)
@@ -385,7 +366,7 @@ describe("PATCH /jobs/:id", () => {
     test("Returns error with status 400 for empty data input", async () => {
 
         // Grab ID of job1 from database
-        const id = await getId("job1");
+        const id = await getJobId("job1");
 
         const resp = await request(app)
             .patch(`/jobs/${id}`)
@@ -404,7 +385,7 @@ describe("PATCH /jobs/:id", () => {
     test("Returns error with status 401 for a user that isn't logged in", async () => {
 
         // Grab ID of job1 from database
-        const id = await getId("job1");
+        const id = await getJobId("job1");
 
         const resp = await request(app)
             .patch(`/jobs/${id}`)
@@ -422,7 +403,7 @@ describe("PATCH /jobs/:id", () => {
     test("Returns error with status 401 for a logged-in, non-admin user", async () => {
 
         // Grab ID of job1 from database
-        const id = await getId("job1");
+        const id = await getJobId("job1");
 
         const resp = await request(app)
             .patch(`/jobs/${id}`)
@@ -441,7 +422,7 @@ describe("PATCH /jobs/:id", () => {
     test("Returns error with status 400 for request with invalid data", async () => {
 
         // Grab ID of job1 from database
-        const id = await getId("job1");
+        const id = await getJobId("job1");
 
         const invalidData = {
             title: "New Job Title",
@@ -461,7 +442,7 @@ describe("PATCH /jobs/:id", () => {
     test("Returns error with status 400 for non-allowed field input", async () => {
 
         // Grab ID of job1 from database
-        const id = await getId("job1");
+        const id = await getJobId("job1");
 
         const notAllowedData = {
             title: "New Job Title",
@@ -505,7 +486,7 @@ describe("DELETE /jobs/:id", () => {
     test("Works for admins", async () => {
 
         // Grab ID of job1 from database
-        const id = await getId("job1");
+        const id = await getJobId("job1");
 
         const resp = await request(app)
             .delete(`/jobs/${id}`)
@@ -520,7 +501,7 @@ describe("DELETE /jobs/:id", () => {
     test("Returns error with status 401 for a user that isn't logged in", async () => {
 
         // Grab ID of job1 from database
-        const id = await getId("job1");
+        const id = await getJobId("job1");
 
         const resp = await request(app)
             .delete(`/jobs/${id}`);
@@ -537,7 +518,7 @@ describe("DELETE /jobs/:id", () => {
     test("Returns error with status 401 for a logged-in, non-admin user", async () => {
 
         // Grab ID of job1 from database
-        const id = await getId("job1");
+        const id = await getJobId("job1");
 
         const resp = await request(app)
             .delete(`/jobs/${id}`)
