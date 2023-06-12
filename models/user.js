@@ -229,6 +229,8 @@ class User {
      *  - 'username' is the username of the user applying for the job,
      *  - 'jobId' is the ID of the job being applied for.
      *
+     * Throw error (status 400) for duplicate applications.
+     *
      * Throw error (status 404) if no username with the given username exists.
      *
      * Throw error (status 404) if no job with the given ID exists.
@@ -255,6 +257,17 @@ class User {
 
         if (jobRes.rows[0] === undefined) {
             throw new NotFoundError(`No job found: '${jobId}'`);
+        }
+
+        // Check for application existence
+        const appRes = await db.query(`
+            SELECT username FROM applications
+            WHERE username = $1 AND job_id = $2`,
+            [username, jobId]
+        );
+
+        if (appRes.rows.length !== 0) {
+            throw new BadRequestError(`Duplicate application: job ID ${jobId}`);
         }
 
         // Insert entry into applications table
