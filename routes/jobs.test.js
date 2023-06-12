@@ -61,10 +61,23 @@ describe("POST /jobs", () => {
             }
         });
 
-        // TODO: Check that job was created
+        // Check that job was created
+        const jobId = resp.body.job.id;
+        const check = await Job.get(jobId);
+
+        expect(check).toEqual({
+            id: jobId,
+            ...newJob,
+            equity: "0.999"
+        });
     })
 
     test("Returns error with status 401 for a user that isn't logged in", async () => {
+
+        // Get original number of jobs
+        const origJobs = await Job.findAll({});
+        const origNumJobs = origJobs.length;
+
         const resp = await request(app)
             .post("/jobs")
             .send(newJob);
@@ -77,10 +90,18 @@ describe("POST /jobs", () => {
             }
         });
 
-        // TODO: Check that job wasn't created
+        // Check that job wasn't created
+        const check = await Job.findAll({});
+
+        expect(check.length).toEqual(origNumJobs);
     })
 
     test("Returns error with status 401 for a logged-in, non-admin user", async () => {
+
+        // Get original number of jobs
+        const origJobs = await Job.findAll({});
+        const origNumJobs = origJobs.length;
+
         const resp = await request(app)
             .post("/jobs")
             .send(newJob)
@@ -94,10 +115,18 @@ describe("POST /jobs", () => {
             }
         });
 
-        // TODO: Check that job wasn't created
+        // Check that job wasn't created
+        const check = await Job.findAll({});
+
+        expect(check.length).toEqual(origNumJobs);
     })
 
     test("Returns error with status 400 for request with missing data", async () => {
+
+        // Get original number of jobs
+        const origJobs = await Job.findAll({});
+        const origNumJobs = origJobs.length;
+
         const missingData = {
             title: "New Job",
         };
@@ -110,10 +139,17 @@ describe("POST /jobs", () => {
         expect(resp.statusCode).toEqual(400);
         expect(resp.body.error).toBeTruthy();
 
-        // TODO: Check that job wasn't created
+        // Check that job wasn't created
+        const check = await Job.findAll({});
+
+        expect(check.length).toEqual(origNumJobs);
     })
 
     test("Returns error with status 400 for request with invalid data", async () => {
+        // Get original number of jobs
+        const origJobs = await Job.findAll({});
+        const origNumJobs = origJobs.length;
+
         const invalidData = {
             title: "New Job",
             salary: -100,
@@ -129,7 +165,10 @@ describe("POST /jobs", () => {
         expect(resp.statusCode).toEqual(400);
         expect(resp.body.error).toBeTruthy();
 
-        // TODO: Check that job wasn't created
+        // Check that job wasn't created
+        const check = await Job.findAll({});
+
+        expect(check.length).toEqual(origNumJobs);
     })
 })
 
@@ -319,6 +358,13 @@ describe("GET /jobs/:id", () => {
 
 describe("PATCH /jobs/:id", () => {
 
+    const origData = {
+        title: "job1",
+        salary: 100,
+        equity: "0.1",
+        companyHandle: "c1"
+    }
+
     const fullData = {
         title: "New Job Title",
         salary: 111,
@@ -335,6 +381,14 @@ describe("PATCH /jobs/:id", () => {
         // Grab ID of job1 from database
         const id = await getJobId("job1");
 
+        const newData = {
+            id,
+            title: "New Job Title",
+            salary: 111,
+            equity: "0.111",
+            companyHandle: "c1"
+        };
+
         const resp = await request(app)
             .patch(`/jobs/${id}`)
             .send(fullData)
@@ -342,22 +396,27 @@ describe("PATCH /jobs/:id", () => {
 
         expect(resp.statusCode).toEqual(200);
         expect(resp.body).toEqual({
-            job: {
-                id,
-                title: "New Job Title",
-                salary: 111,
-                equity: "0.111",
-                companyHandle: "c1"
-            }
+            job: newData
         });
 
-        // TODO: Check that job was updated
+        // Check that job was updated
+        const check = await Job.get(id);
+
+        expect(check).toEqual(newData);
     })
 
     test("Works for admins - partial update", async () => {
 
         // Grab ID of job1 from database
         const id = await getJobId("job1");
+
+        const newData = {
+            id,
+            title: "New Job Title",
+            salary: 100,
+            equity: "0.111",
+            companyHandle: "c1"
+        }
 
         const resp = await request(app)
             .patch(`/jobs/${id}`)
@@ -366,16 +425,13 @@ describe("PATCH /jobs/:id", () => {
 
         expect(resp.statusCode).toEqual(200);
         expect(resp.body).toEqual({
-            job: {
-                id,
-                title: "New Job Title",
-                salary: 100,
-                equity: "0.111",
-                companyHandle: "c1"
-            }
+            job: newData
         });
 
-        // TODO: Check that job was updated
+        // Check that job was updated
+        const check = await Job.get(id);
+
+        expect(check).toEqual(newData);
     })
 
     test("Returns error with status 400 for empty data input", async () => {
@@ -396,7 +452,13 @@ describe("PATCH /jobs/:id", () => {
             }
         });
 
-        // TODO: Check that job was not updated
+        // Check that job was not updated
+        const check = await Job.get(id);
+
+        expect(check).toEqual({
+            id,
+            ...origData
+        });
     })
 
     test("Returns error with status 401 for a user that isn't logged in", async () => {
@@ -416,7 +478,13 @@ describe("PATCH /jobs/:id", () => {
             }
         });
 
-        // TODO: Check that job was not updated
+        // Check that job was not updated
+        const check = await Job.get(id);
+
+        expect(check).toEqual({
+            id,
+            ...origData
+        });
     })
 
     test("Returns error with status 401 for a logged-in, non-admin user", async () => {
@@ -437,7 +505,13 @@ describe("PATCH /jobs/:id", () => {
             }
         });
 
-        // TODO: Check that job was not updated
+        // Check that job was not updated
+        const check = await Job.get(id);
+
+        expect(check).toEqual({
+            id,
+            ...origData
+        });
     })
 
     test("Returns error with status 400 for request with invalid data", async () => {
@@ -459,7 +533,13 @@ describe("PATCH /jobs/:id", () => {
         expect(resp.statusCode).toEqual(400);
         expect(resp.body.error).toBeTruthy();
 
-        // TODO: Check that job was not updated
+        // Check that job was not updated
+        const check = await Job.get(id);
+
+        expect(check).toEqual({
+            id,
+            ...origData
+        });
     })
 
     test("Returns error with status 400 for non-allowed field input", async () => {
@@ -482,7 +562,13 @@ describe("PATCH /jobs/:id", () => {
         expect(resp.statusCode).toEqual(400);
         expect(resp.body.error).toBeTruthy();
 
-        // TODO: Check that job was not updated
+        // Check that job was not updated
+        const check = await Job.get(id);
+
+        expect(check).toEqual({
+            id,
+            ...origData
+        });
     })
 
     test("Returns error with status 404 if job not found", async () => {
@@ -498,8 +584,6 @@ describe("PATCH /jobs/:id", () => {
                 message: "No job found: 0",
             }
         });
-
-        // TODO: Check that job was not updated
     })
 })
 
