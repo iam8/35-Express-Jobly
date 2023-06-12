@@ -424,6 +424,7 @@ describe("Testing update() method", () => {
 
         expect(job).toEqual(expectedData);
 
+        // Check change in database
         const qRes = await db.query(`
             SELECT id, title, salary, equity, company_handle AS "companyHandle"
             FROM jobs
@@ -451,6 +452,7 @@ describe("Testing update() method", () => {
 
         expect(job).toEqual(expectedData);
 
+        // Check change in database
         const qRes = await db.query(`
             SELECT id, title, salary, equity, company_handle AS "companyHandle"
             FROM jobs
@@ -517,6 +519,7 @@ describe("Testing remove() method", () => {
 
         await Job.remove(jobId);
 
+        // Test change in database
         const qRes = await db.query(`
             SELECT id FROM jobs
             WHERE id = $1`,
