@@ -11,7 +11,8 @@ const request = require("supertest");
 
 const db = require("../db");
 const app = require("../app");
-const { BadRequestError } = require("../expressError");
+const { Job } = require("../models/job");
+const { NotFoundError } = require("../expressError");
 
 const {
     getJobId,
@@ -59,6 +60,8 @@ describe("POST /jobs", () => {
                 companyHandle: "c1"
             }
         });
+
+        // TODO: Check that job was created
     })
 
     test("Returns error with status 401 for a user that isn't logged in", async () => {
@@ -73,6 +76,8 @@ describe("POST /jobs", () => {
                 message: "Unauthorized"
             }
         });
+
+        // TODO: Check that job wasn't created
     })
 
     test("Returns error with status 401 for a logged-in, non-admin user", async () => {
@@ -88,6 +93,8 @@ describe("POST /jobs", () => {
                 message: "Unauthorized"
             }
         });
+
+        // TODO: Check that job wasn't created
     })
 
     test("Returns error with status 400 for request with missing data", async () => {
@@ -102,6 +109,8 @@ describe("POST /jobs", () => {
 
         expect(resp.statusCode).toEqual(400);
         expect(resp.body.error).toBeTruthy();
+
+        // TODO: Check that job wasn't created
     })
 
     test("Returns error with status 400 for request with invalid data", async () => {
@@ -119,6 +128,8 @@ describe("POST /jobs", () => {
 
         expect(resp.statusCode).toEqual(400);
         expect(resp.body.error).toBeTruthy();
+
+        // TODO: Check that job wasn't created
     })
 })
 
@@ -339,6 +350,8 @@ describe("PATCH /jobs/:id", () => {
                 companyHandle: "c1"
             }
         });
+
+        // TODO: Check that job was updated
     })
 
     test("Works for admins - partial update", async () => {
@@ -361,6 +374,8 @@ describe("PATCH /jobs/:id", () => {
                 companyHandle: "c1"
             }
         });
+
+        // TODO: Check that job was updated
     })
 
     test("Returns error with status 400 for empty data input", async () => {
@@ -380,6 +395,8 @@ describe("PATCH /jobs/:id", () => {
                 message: "No data"
             }
         });
+
+        // TODO: Check that job was not updated
     })
 
     test("Returns error with status 401 for a user that isn't logged in", async () => {
@@ -398,6 +415,8 @@ describe("PATCH /jobs/:id", () => {
                 message: "Unauthorized",
             }
         });
+
+        // TODO: Check that job was not updated
     })
 
     test("Returns error with status 401 for a logged-in, non-admin user", async () => {
@@ -417,6 +436,8 @@ describe("PATCH /jobs/:id", () => {
                 message: "Unauthorized",
             }
         });
+
+        // TODO: Check that job was not updated
     })
 
     test("Returns error with status 400 for request with invalid data", async () => {
@@ -437,6 +458,8 @@ describe("PATCH /jobs/:id", () => {
 
         expect(resp.statusCode).toEqual(400);
         expect(resp.body.error).toBeTruthy();
+
+        // TODO: Check that job was not updated
     })
 
     test("Returns error with status 400 for non-allowed field input", async () => {
@@ -458,6 +481,8 @@ describe("PATCH /jobs/:id", () => {
 
         expect(resp.statusCode).toEqual(400);
         expect(resp.body.error).toBeTruthy();
+
+        // TODO: Check that job was not updated
     })
 
     test("Returns error with status 404 if job not found", async () => {
@@ -466,13 +491,15 @@ describe("PATCH /jobs/:id", () => {
             .send(fullData)
             .set("authorization", adminAuth);
 
-            expect(resp.statusCode).toEqual(404);
-            expect(resp.body).toEqual({
-                error: {
-                    status: 404,
-                    message: "No job found: 0",
-                }
-            });
+        expect(resp.statusCode).toEqual(404);
+        expect(resp.body).toEqual({
+            error: {
+                status: 404,
+                message: "No job found: 0",
+            }
+        });
+
+        // TODO: Check that job was not updated
     })
 })
 
@@ -496,6 +523,8 @@ describe("DELETE /jobs/:id", () => {
         expect(resp.body).toEqual({
             deleted: `${id}`
         });
+
+        // TODO: Check that job was deleted
     })
 
     test("Returns error with status 401 for a user that isn't logged in", async () => {
@@ -513,6 +542,8 @@ describe("DELETE /jobs/:id", () => {
                 message: "Unauthorized"
             }
         });
+
+        // TODO: Check that job was not deleted
     })
 
     test("Returns error with status 401 for a logged-in, non-admin user", async () => {
@@ -531,6 +562,8 @@ describe("DELETE /jobs/:id", () => {
                 message: "Unauthorized"
             }
         });
+
+        // TODO: Check that job was not deleted
     })
 
     test("Returns error with status 404 if job not found", async () => {
