@@ -8,6 +8,8 @@
 const request = require("supertest");
 
 const app = require("../app");
+const User = require("../models/user");
+const { NotFoundError } = require("../expressError");
 
 const {
     commonBeforeAll,
@@ -102,9 +104,23 @@ describe("POST /auth/register", function () {
         expect(resp.body).toEqual({
             "token": expect.any(String),
         });
+
+        // Test that user has been created
+        const check = await User.get("new");
+
+        expect(check).toEqual({
+            username: "new",
+            firstName: "first",
+            lastName: "last",
+            email: "new@email.com",
+            isAdmin: false,
+            jobs: []
+        });
     });
 
     test("bad request with missing fields", async function () {
+        expect.assertions(2);
+
         const resp = await request(app)
             .post("/auth/register")
             .send({
@@ -112,9 +128,18 @@ describe("POST /auth/register", function () {
             });
 
         expect(resp.statusCode).toEqual(400);
+
+        // Test that user wasn't created
+        try {
+            await User.get("new");
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError("No user: new"));
+        }
     });
 
     test("bad request with invalid data", async function () {
+        expect.assertions(2);
+
         const resp = await request(app)
             .post("/auth/register")
             .send({
@@ -126,5 +151,12 @@ describe("POST /auth/register", function () {
             });
 
         expect(resp.statusCode).toEqual(400);
+
+        // Test that user wasn't created
+        try {
+            await User.get("new");
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError("No user: new"));
+        }
     });
 });
