@@ -484,20 +484,39 @@ describe("PATCH /users/:username", () => {
 /************************************** DELETE /users/:username */
 
 describe("DELETE /users/:username", function () {
+
     test("works for admins", async function () {
+        expect.assertions(2);
+
         const resp = await request(app)
             .delete(`/users/u1`)
             .set("authorization", `Bearer ${u2Token}`);
 
         expect(resp.body).toEqual({ deleted: "u1" });
+
+        // TODO: Check that user is deleted
+        try {
+            await User.get("u1");
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError(`No user: u1`));
+        }
     });
 
     test("Works for corresponding, non-admin user", async () => {
+        expect.assertions(2);
+
         const resp = await request(app)
             .delete("/users/u1")
             .set("authorization", `Bearer ${u1Token}`);
 
         expect(resp.body).toEqual({ deleted: "u1" });
+
+        // TODO: Check that user is deleted
+        try {
+            await User.get("u1");
+        } catch(err) {
+            expect(err).toEqual(new NotFoundError(`No user: u1`));
+        }
     })
 
     test("Returns unauthorized (status 401) for a non-corresponding, non-admin user", async () => {
@@ -512,6 +531,11 @@ describe("DELETE /users/:username", function () {
                 message: "Unauthorized"
             }
         });
+
+        // TODO: Check that user is not deleted
+        const check = await User.get("u2");
+
+        expect(check.username).toEqual("u2");
     })
 
     test("unauth for anon", async function () {
@@ -519,6 +543,12 @@ describe("DELETE /users/:username", function () {
             .delete(`/users/u1`);
 
         expect(resp.statusCode).toEqual(401);
+
+        // TODO: Check that user is not deleted
+        const check = await User.get("u1");
+
+        expect(check.username).toEqual("u1");
+
     });
 
     test("not found if user missing", async function () {
