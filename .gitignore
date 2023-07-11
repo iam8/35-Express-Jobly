@@ -7,3 +7,6 @@ coverage/
 
 # Config
 .env
+
+# For code review
+features.txt
